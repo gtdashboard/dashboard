@@ -1,0 +1,81 @@
+  private class GetHttpResponse extends AsyncTask<Void, Void, Void> {
+        private Context context;
+        String result;
+        ImageView photo;
+        JSONArray users = null;
+        ArrayList<HashMap<String, String>> newsList;
+
+
+        public GetHttpResponse(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            Log.d("method", "in pre....");
+            newsList = new ArrayList<HashMap<String, String>>();
+            photo = new ImageView(context);
+        }
+
+        @Override
+        protected Void doInBackground(Void... arg0) {
+            String JsonURL="http://q8hub.com/android_connect/get_news.php";
+            JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET,
+                    JsonURL, null, new Response.Listener<JSONObject>() {
+
+                @Override
+                public void onResponse(JSONObject jo) {
+                    Log.d("Response", jo.toString());
+                    try {
+                        int s = jo.getInt("success");
+                        if (s == 1) {
+                            JSONArray users = jo.getJSONArray("headlines");
+                            count=users.length();
+                            title=new String[count];
+                            img=new String[count];
+                            desc=new String[count];
+                            url_news=new String[count];
+                            paper=new String[count];
+                            for (int i = 0; i < users.length(); i++)
+                            {
+                                JSONObject o = users.getJSONObject(i);
+                                String id = o.getString("id");
+                                Log.d("id", id);
+                                System.out.print("id" + id);
+                                title[i] = StringEscapeUtils.unescapeHtml3(o.getString("news"));
+                                Log.d("title", title[i]);
+                                System.out.print("id" + id);
+                                desc[i]= StringEscapeUtils.unescapeHtml3(o.getString("desc"));
+                                Log.d("desc", desc[i]);
+                                img[i] = StringEscapeUtils.unescapeHtml3(o.getString("image"));
+                                url_news[i]=StringEscapeUtils.unescapeHtml3(o.getString("url"));
+                                paper[i]=o.getString("paper");
+                            }
+                        }
+                        proNews.setVisibility(View.GONE);
+                        mRecyclerView.setAdapter(new MyAdapter(getActivity(),count,title,img,desc,url_news,paper));
+
+
+                    } catch (JSONException e) {}
+                }
+            }, new Response.ErrorListener() {
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+            });
+            mRequestQueue.add(req);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result)
+        {
+            Log.d("method", "in post....");
+            proNews.setVisibility(View.GONE);
+            mRecyclerView.setAdapter(new MyAdapter(getActivity(),count,title,img,desc,url_news,paper));
+        }
+
+    }

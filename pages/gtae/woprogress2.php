@@ -3,7 +3,6 @@
 require 'db.php';
 //include "config.php";
 $db_handle=new DBController();
-
 $wono = "";
 if (isset($_GET['wono'])) {
     $wono = $_GET['wono'];
@@ -29,11 +28,6 @@ if(!empty($result))
     }
     //$boqResult = getBoqDetails($item_id, $pono);
 }
-else
-{
-    echo mysqli_error( mysqli_connect("localhost:8889","root","root"));
-    echo "here";
-}
 echo "</select>\n";
 echo "<input type='submit' name='submit'>\n";
 
@@ -50,11 +44,6 @@ function getBoqDetails($item_id, $pono)
         {
             return $boqR;
         }
-    }
-    else
-    {
-	echo $sqlboq . "is empty";
-        echo mysqli_error( mysqli_connect("localhost:8889","root","root"));
     }
 }
 

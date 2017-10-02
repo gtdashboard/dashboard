@@ -164,7 +164,7 @@ $("#eno").keyup(function(){
 	},
 	success: handleData
 	});
-    });
+});
 function handleData(data)
 {
     JSON.parse(data, (key, value) => {

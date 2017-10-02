@@ -104,14 +104,19 @@
         <div class="box-body">
         <table class="table table-bordered" id="table4">
         <?php
-            $wo="select sum(points) as total from wo_progress,wo_weightage where wo_progress.wo_id=$woid and wo_progress.activity_id=wo_weightage.id" ;
-            $result_wo=$db_handle->runQuery($wo);
+            $wo_sum="select sum(points) as total from wo_progress,wo_weightage where wo_progress.wo_id=$woid and wo_progress.activity_id=wo_weightage.id" ;
+            //echo $wo_sum;
+            $result_wo=$db_handle->runQuery($wo_sum);
             if(!empty($result_wo))
             {
                 foreach($result_wo as $row)
                 {
                     $total=$row['total'];
                 }
+            }
+            if($total==null)
+            {
+                $total=0;
             }
         ?>
         <thead>
@@ -212,7 +217,7 @@ function add3(data,id)
             var newTr = '<tr>\
                     <td><label>'+ act +'</label></td>\
                     <td><label>'+ point +'</label></td>\
-                    <td><a class="btn" onclick="del(this,'+ id +')"><i class="fa fa-trash-o fa-lg"></i></a></td></tr>';
+                    <td><a class="btn" onclick="del(this,'+ id +')"><i class="fa fa-trash-o"></i></a></td></tr>';
             $('#table4 > tbody:last-child').append(newTr);
             console.log(newTr);
             document.getElementById("total").textContent=t

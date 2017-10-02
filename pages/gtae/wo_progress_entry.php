@@ -46,9 +46,9 @@ session_start();
     <div class="col-md-6">
         <div class="box box-primary">
         <div class="box-header with-border">
-        <h3 class="box-title">Work Order Status Update</h3>
+        <h3 class="box-title">Work Order Progress</h3>
         </div>
-            <form role="form" action="wo_status_db.php" method="post">
+            <form role="form" action="wo_progress_update.php" method="post">
         <div class="box-body">
         <div class="form-group">
         <label for="exampleInputEmail1">Choose Project Number</label>
@@ -79,7 +79,7 @@ session_start();
         <label for="exampleInputPassword1">Choose Work Order Number</label>
         <select class="form-control" name="wo" id="wo">
         <?php
-        $basic="SELECT distinct(work_order_no) FROM wo_numbers WHERE pno=$p";
+        $basic="SELECT DISTINCT(wo_numbers.work_order_no) FROM `wo_progress`,wo_numbers WHERE wo_numbers.pno=$p and wo_numbers.id_wo=wo_progress.wo_id ";
         $result_basic=$db_handle->runQuery($basic);
         if(!empty($result_basic))
         {
@@ -92,28 +92,8 @@ session_start();
         ?>
         </select>
         </div>
-        <div class="form-group">
-        <label for="exampleInputEmail1">Select Status</label>
-        <select class="form-control" id="status" name="status">
-            <option value='0'>Issued</option>
-            <option value='1'>Commenced</option>
-            <option value='2'>Invoiced</option>
-            <option value='2'>Completed</option>
-            <option value='3'>On hold</option>
-            <option value='4'>Cancelled</option>   
-        </select>
-        </div>
-        <div class="form-group">
-            <label>Date:</label>
-            <div class="input-group date">
-            <div class="input-group-addon">
-            <i class="fa fa-calendar"></i>
-            </div>
-            <input type="text" class="form-control pull-right" id="datepicker" name="dt" autocomplete="off">
-            </div>
-        </div>
         <div class="box-footer">
-        <button type="submit" class="btn btn-primary">Update</button>
+        <button type="submit" class="btn btn-primary">Update Progress</button>
         </div>
         </form>
         </div>
@@ -152,7 +132,7 @@ $("#pno").change(function(){
         
         $.ajax({
 	type: "POST",
-	url: "wo_details2.php?key="+$(this).val(),
+	url: "wo_progress_wono_db.php?key="+$(this).val(),
 	beforeSend: function(){
             console.log("Sending..");
 	},

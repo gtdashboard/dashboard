@@ -52,7 +52,7 @@ session_start();
         <select class="form-control" id="pno" name="pno">
         <?php
             require 'db.php';
-            $db_handle=new DBController($p);
+            $db_handle=new DBController();
             $basic="SELECT pno FROM general";
             $result_basic=$db_handle->runQuery($basic);
             if(!empty($result_basic))
@@ -76,13 +76,13 @@ session_start();
         <label for="exampleInputPassword1">Choose Work Order Number</label>
         <select class="form-control" name="wo" id="wo">
         <?php
-        $basic="SELECT distinct(wo_no) FROM boq_item WHERE pno=$p";
+        $basic="SELECT distinct(work_order_no) FROM wo_numbers WHERE pno=$p";
         $result_basic=$db_handle->runQuery($basic);
         if(!empty($result_basic))
         {
             foreach ($result_basic as $row)
             {
-                $wno=$row['wo_no'];
+                $wno=$row['work_order_no'];
                 echo "<option value='$wno'>$wno</option>";
             }
         }

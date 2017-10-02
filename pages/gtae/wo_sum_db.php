@@ -55,17 +55,33 @@
     $hd= date('Y-m-d',$hd);
     
     
-    
-    
-    $basic="INSERT INTO `wo_summary`(`pno`, `wo_no`, `start`, `end`, `value`, `description`) "
-            . "VALUES ($pno,'$wo_no','$st','$hd','$wo_val','$desc')";
-    echo $basic;
-    $result_basic=$db_handle->runUpdate($basic);
-    if(!empty($result_basic))
+    $test="select * from wo_numbers where work_order_no='$wo_no'";
+    $result_test=$db_handle->runQuery($test);
+    if(!empty($result_test))
     {
-        echo json_encode($result_basic);
-        header("Location:wo_status.php");
+        $basic="update wo_numbers set start='$st',end='$hd',value='$wo_val',description='$desc' where work_order_no='$wo_no'";
+        echo $basic;
+        $result_basic=$db_handle->runUpdate($basic);
+        if(!empty($result_basic))
+        {
+            echo json_encode($result_basic);
+            header("Location:wo_status.php");
+        }
     }
+    else 
+    {
+        $basic="INSERT INTO `wo_numbers`(`pno`, `work_order_no`, `start`, `end`, `value`, `description`) "
+            . "VALUES ($pno,'$wo_no','$st','$hd','$wo_val','$desc')";
+        echo $basic;
+        $result_basic=$db_handle->runUpdate($basic);
+        if(!empty($result_basic))
+        {
+            echo json_encode($result_basic);
+            header("Location:wo_status.php");
+        }
+    }
+    
+    
 
 ?>
 

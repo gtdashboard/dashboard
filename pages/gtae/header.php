@@ -79,6 +79,10 @@
         <li><a href="wo_status.php">Work Order Status</a></li>
         <li class="divider"></li>
         <li><a href="wo_new.php">Add New Work Order</a></li>
+        <li class="divider"></li>
+        <li><a href="wo_progress_entry.php">Work Order Progress Update</a></li>
+           <li class="divider"></li>
+        <li><a href="wo_progress.php">Work Order Progress Activity</a></li>
         </ul>
         </li>
         </ul>

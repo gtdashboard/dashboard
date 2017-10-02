@@ -5,7 +5,8 @@
     $db_handle=new DBController();
     //$p=$_REQUEST['p'];
     $p=105;
-    $basic="SELECT * FROM wo_summary,wo_status WHERE id_summary=id_wo";
+    $basic="SELECT * FROM wo_numbers,wo_status WHERE wo_numbers.id_wo=wo_status.id_wo";
+    echo $basic;
     $result_basic=$db_handle->runQuery($basic);
 ?>
 <!DOCTYPE html>
@@ -70,7 +71,7 @@
                 {
                     $i++;
                     $pno=$row['pno'];
-                    $wo_no=$row['wo_no'];
+                    $wo_no=$row['work__order_no'];
                     $wo_val=$row['value'];
                     $st=$row['start'];
                     $et=$row['end'];

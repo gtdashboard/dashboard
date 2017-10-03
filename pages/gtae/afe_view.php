@@ -1,157 +1,46 @@
 <?php
 require 'db.php';
 session_start();
-function track_id($p,$dt)
+$db_handle=new DBController();
+$afe_id=$_REQUEST['afe_id'];
+$basic="select * from afe where id_afe=$afe_id";
+$result_basic=$db_handle->runQuery($basic);
+if(!empty($result_basic))
 {
-        
-    $db_handle=new DBController();
-    $dt= strtotime($dt);   
-    $date2=date('ymd',$dt);
-    $type="AE";
-    $track="SP$p$type$date2";
-    //echo $track;
-   // echo "<br>";
-    $basic="SELECT * FROM `afe` WHERE tracking_id like '$track%'";
-    $result_basic=$db_handle->runQuery($basic);
-    if(!empty($result_basic))
+    foreach($result_basic as $row)
     {
-        foreach($result_basic as $row)
-        {
-            $track_last=$row['tracking_id'];
-           // echo $track_last;
-        }
-        //echo "<br>";
-        $serial=substr($track_last, 13,16);
-        //echo $serial;
-        $serial+=1;
-        //echo "<br>";
-        $serial=str_pad($serial, 3, '0', STR_PAD_LEFT);
-        $track.=$serial;
-       // echo "Final Track::".$track;
-
-    }
-    else
-    {
-        $serial=1;
-        //echo "<br>";
-        $serial=str_pad($serial, 3, '0', STR_PAD_LEFT);
-        $track.=$serial;
-        //echo "Final Track::".$track;
-    }
-    return $track;
-}
-$date="";
-$mpr="";
-$pno="";
-$ptitle="";
-$expense="";
-$expected="";
-$amount="";
-$additional=0;
-if(isset($_REQUEST['additional']))
-{
-    
-    $add=$_REQUEST['additional'];
-    if(strcmp($add, 'additional')==0)
-        {
-            $additional=1;
-        }
-}
-
-if(isset($_REQUEST['datepicker']))
-{
-    
-    $date=$_REQUEST['datepicker'];
-    $a=date_create($date);
-    $dt=date_format($a, 'Y-m-d');
-   // echo $dt;
-   // echo $date;
-    //echo "<br>";
-}
-
-if(isset($_REQUEST['mpr']))
-{
-    $mpr=$_REQUEST['mpr'];
-    //echo $mpr;
-   // echo "<br>";
-
-}
-if(isset($_REQUEST['pno']))
-{
-    $pno=$_REQUEST['pno'];
-   // echo $pno;
-   // echo "<br>";
-}
-if(isset($_REQUEST['ptitle']))
-{
-    $ptitle=$_REQUEST['ptitle'];
-   // echo $ptitle;
-   // echo "<br>";
-}
-if(isset($_REQUEST['expense']))
-{
-    $expense=$_REQUEST['expense'];
-   //echo $expense;
-    //echo "<br>";
-}
-if(isset($_REQUEST['expected']))
-{
-    $expected=$_REQUEST['expected'];
-   // echo $expected;
-    //echo "<br>";
-}
-if(isset($_REQUEST['amount']))
-{
-    $amount=$_REQUEST['amount'];
-    //echo $amount;
-    //echo "<br>";
-}
-$nature="";
-$material=0;
-$service=0;
-$contract=0;
-$capital=0;
-$other=0;
-if(isset($_REQUEST['nature']))
-{
-    $nature=$_REQUEST['nature'];
-    foreach ($nature as $value){ 
-        if(strcmp($value, 'service')==0)
-        {
-            $service=1;
-        }
-        if(strcmp($value, 'material')==0)
-        {
-            $material=1;
-        }
-        if(strcmp($value, 'contract')==0)
-        {
-            $contract=1;
-        }
-        if(strcmp($value, 'capital')==0)
-        {
-            $capital=1;
-        }
-        if(strcmp($value, 'other')==0)
-        {
-            $other=1;
-        }
-       // echo $value."<br />";
-    }
-  //  echo "<br>";
-}
-                    $db_handle=new DBController();
-                    if(isset($dt)&&isset($pno))
+                    $afe_no=$row['afe_no'];
+                    $track=$row['tracking_id'];
+                    $dt=$row['afe_date'];
+                    
+                    $dt= strtotime($dt);
+                    
+                    $date=Date('d.m.Y',$dt);
+                    
+                    $mpr=$row['mpr_details'];
+                    $pno=$row['pno'];
+                    if($pno=104)
                     {
-                        $tracking_id= track_id($pno, $dt);
-                        $basic="INSERT INTO `afe`(`afe_date`, `mpr_details`, `pno`, `afe_amount`, `service`, `sub_contract`, `material_supply`, `capital`, `other`, `expected`,tracking_id,expense,additional) VALUES ('$dt','$mpr',$pno,$amount,$service,$contract,$material,$capital,$other,'$expected','$tracking_id','$expense',$additional) ";
-                        //echo $basic;
-                        $result_basic=$db_handle->runUpdate($basic);
-                        if(!empty($result_basic))
-                        {
-                            //echo $result_basic;
-                        }
+                        $ptitle='Construction of Flowlines & Associated works in West Kuwait Area';
                     }
+                    else if($pno=105){
+                        $ptitle='Construction of Flowlines & Associated works in North Kuwait Area';
+                    }
+                  
+                    $expense=$row['expense'];
+                    $amount=$row['afe_amount'];
+                    $additional=$row['additional'];
+
+                    $material=$row['material_supply'];
+                    $service=$row['service'];
+                    $contract=$row['sub_contract'];
+                    $capital=$row['capital'];
+                    $other=$row['other'];
+                    
+                    $expected=$row['expected'];
+                }
+                //echo $track;
+            }
 ?>
 <!DOCTYPE html>
 <html>
@@ -191,7 +80,7 @@ if(isset($_REQUEST['nature']))
     <br/>
     <br/>
               <div class="container" style="text-align: center;background-color:gainsboro;font-weight:bold; padding: 2px;border: 1px solid black;">
-                  AFE Form (<?php if(isset($tracking_id)){echo $tracking_id;}?>)</div>
+                  AFE No: <?php echo $afe_no;?></div>
         <div class="container" style="text-align: left;height:40px;">
             <div class="row">
                 <div class="col-md-3 col-xs-3" style="border: 2px solid black;font-weight:bold;line-height:40px;font-size: 15px;">MPR/RSC/RSO/REV No.</div>
@@ -281,7 +170,7 @@ if(isset($_REQUEST['nature']))
         <div class="container" style="text-align: left;height:40px;font-size: 15px;">
             <div class="row" >
                 <div class="col-md-6 col-xs-6" ></div>
-                <div class="col-md-2 col-xs-2" ><a href="afe_print.php?track=<?php if(isset($tracking_id)){echo $tracking_id;}?>" class="btn btn-primary" target="_blank">Print</a></div>
+                <div class="col-md-2 col-xs-2" ><a href="afe_print.php?track=<?php if(isset($track)){echo $track;}?>" class="btn btn-primary" target="_blank">Print</a></div>
                 <div class="col-md-4 col-xs-4" ></div>
             </div>
         </div>  
@@ -306,3 +195,5 @@ if(isset($_REQUEST['nature']))
 <script src="../../dist/js/demo.js"></script>
 </body>
 </html>
+
+

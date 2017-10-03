@@ -108,19 +108,6 @@ session_start();
 <!-- AdminLTE for demo purposes -->
 <script src="../../dist/js/demo.js"></script>
 <script>
-    //Date picker
-    $('#gateDate').datepicker({
-      autoclose: true,
-      format: 'dd.mm.yyyy'
-    });
-    $('#resDate').datepicker({
-      autoclose: true,
-      format: 'dd.mm.yyyy'
-    });
-     function test()
-{
-    
-}
     $("#eno").keyup(function(){
         
         $.ajax({

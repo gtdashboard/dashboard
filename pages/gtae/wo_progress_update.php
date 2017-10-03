@@ -154,28 +154,7 @@
         </div>
     </div>
     </div>
-    <div class="row" style="align-content: center;">
-    <div class="col-md-12">
-        <div class="box box-primary">
-        <div class="box-header with-border">
-        <h3 class="box-title">Work Order Status(<?php echo $wo;?>)</h3>
-        </div>
-        <div class="box-body">
-        <table class="table table-bordered" id="table4">
-        <tr>
-            <th>#</th>
-            <th>Activity</th>
-            <th>Value</th>
-            <th>Current Points</th>
-            <th>Given Points</th>
-            <th></th>
-        </tr>
-       </table>
-            
-        </div>
-        </div>
-    </div>
-    </div>
+   
     </section>
     </div>
   </div>

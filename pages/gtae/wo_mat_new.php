@@ -121,7 +121,7 @@ $("#pno").change(function(){
         
         $.ajax({
 	type: "POST",
-	url: "wo_db_details.php?key="+$(this).val(),
+	url: "wo_details2.php?key="+$(this).val(),
 	beforeSend: function(){
             console.log("Sending..");
 	},
@@ -134,16 +134,17 @@ function handleData(data)
     var select = document.getElementById('wo');
     if(data.length>1)
     {
+        document.getElementById("wo").options.length = 0;
         JSON.parse(data, (key, value) => {
-        if(key=='wo_no')
+        if(key=='work_order_no')
         {
-            var opt = document.createElement('option');
-            opt.value = value;
+             var opt = document.createElement('option');
             opt.innerHTML = value;
+            opt.value = value;
             select.appendChild(opt);
-            console.log(value);
+            console.log("wo:"+value);
         }
-    });
+        });
         //console.log(data.length);
     }
     else 

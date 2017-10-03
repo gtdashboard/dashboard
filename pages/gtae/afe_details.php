@@ -4,7 +4,7 @@
 
     $db_handle=new DBController();
     $key=$_REQUEST['key']; 
-    $basic="SELECT expense,mpr_details FROM afe WHERE tracking_id='$key'";
+    $basic="SELECT expense,mpr_details,id_afe FROM afe WHERE tracking_id='$key'";
     $result_basic=$db_handle->runQuery($basic);
     if(!empty($result_basic))
     {

@@ -47,13 +47,13 @@
            // print_r($result_general);
             $pno=$row_gen['pno'];
             $location=$row_gen['project_location'];
-            $basic="SELECT * FROM wo_numbers where pno=$pno";
+            $basic="SELECT * FROM wo_numbers where pno=$pno ORDER BY `work_order_no` DESC";
             //echo $basic;
             $result_basic=$db_handle->runQuery($basic);
                 
         ?>
         
-    <div class="col-md-6">
+    <div class="col-md-6 col-xs-12">
         <div class="box box-primary">
         <div class="box-header with-border">
         <h3 class="box-title"><?php echo "$location (SP $pno)";?></h3>
@@ -76,6 +76,7 @@
                 {
                     $i++;
                     $pno=$row['pno'];
+                    $wo_id=$row['id_wo'];
                     $wo_no=$row['work_order_no'];
                     $wo_val=$row['value'];
                     $wo_val=number_format($wo_val,3);
@@ -117,31 +118,43 @@
                     echo "<td>$wo_val</td>";
                     echo "<td>$st</td>";
                     echo "<td>$et</td>";
-                    echo "<td>Issued</td>";
-                   /* if($status==0)
+                    $stat="select status from wo_status where wo_status.id_wo=$wo_id and date=(select max(date) from  wo_status where wo_status.id_wo=$wo_id)";
+                    $result_stat=$db_handle->runQuery($stat);
+                    if(empty($result_stat))
                     {
                         echo "<td>Issued</td>";
                     }
-                    else if($status==1)
-                    {
-                        echo "<td>Commenced</td>";
+                    else {
+                        foreach($result_stat as $row_stat)
+                        {
+                            $status=$row_stat['status'];
+                        }
+                        if($status==0)
+                        {
+                            echo "<td>Issued</td>";
+                        }
+                        else if($status==1)
+                        {
+                            echo "<td>Commenced</td>";
+                        }
+                        else if($status==2)
+                        {
+                            echo "<td>Invoiced</td>";
+                        }
+                        else if($status==3)
+                        {
+                            echo "<td>Completed</td>";
+                        }
+                        else if($status==4)
+                        {
+                            echo "<td>On Hold</td>";
+                        }
+                        else if($status==5)
+                        {
+                            echo "<td>Cancelled</td>";
+                        }
                     }
-                    else if($status==2)
-                    {
-                        echo "<td>Invoiced</td>";
-                    }
-                    else if($status==3)
-                    {
-                        echo "<td>Completed</td>";
-                    }
-                    else if($status==4)
-                    {
-                        echo "<td>On Hold</td>";
-                    }
-                    else if($status==5)
-                    {
-                        echo "<td>Cancelled</td>";
-                    }*/
+
                     echo "</tr>";
                     
                     

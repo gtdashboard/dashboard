@@ -36,14 +36,14 @@
     
     
     
-    $basic="select id_summary from wo_summary where wo_no='$wo_no'";
+    $basic="select id_wo from wo_numbers where work_order_no='$wo_no'";
     echo $basic;
     $result_basic=$db_handle->runQuery($basic);
     if(!empty($result_basic))
     {
         foreach($result_basic as $row)
         {
-            $id_wo=$row['id_summary'];
+            $id_wo=$row['id_wo'];
         }
         $ins="INSERT INTO `wo_status`( `id_wo`, `status`, `date`) VALUES ($id_wo,$status,'$dt')";
         echo $ins;

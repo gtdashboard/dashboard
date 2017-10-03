@@ -49,12 +49,13 @@ session_start();
             </div>
             <!-- /.box-header -->
             <!-- form start -->
-            <form role="form" action="afe_preview.php" method="post">
+            <form role="form" action="afe_update_db.php" method="post">
               <div class="box-body">
                 <!-- /.form group -->
                 <div class="form-group">
                 <label for="exampleInputEmail1">AFE Track Number</label>
                   <input type="text" class="form-control" name="eno" id="eno" placeholder="Enter Track ID">
+                  <input type="hidden" class="form-control" name="afe_id" id="afe_id">
                 </div>
                 <div class="form-group">
                     <label for="exampleInputPassword1">AFE Title</label>
@@ -108,20 +109,7 @@ session_start();
 <!-- AdminLTE for demo purposes -->
 <script src="../../dist/js/demo.js"></script>
 <script>
-    //Date picker
-    $('#gateDate').datepicker({
-      autoclose: true,
-      format: 'dd.mm.yyyy'
-    });
-    $('#resDate').datepicker({
-      autoclose: true,
-      format: 'dd.mm.yyyy'
-    });
-     function test()
-{
-    
-}
-    $("#eno").keyup(function(){
+$("#eno").keyup(function(){
         
         $.ajax({
 	type: "POST",
@@ -140,6 +128,11 @@ function handleData(data)
         {
             console.log(value);
             document.getElementById("ename").value=value
+        }
+        if(key=='id_afe')
+        {
+            console.log("afe_id = "+value);
+            document.getElementById("afe_id").value=value
         }
         if(key=='mpr_details')
         {

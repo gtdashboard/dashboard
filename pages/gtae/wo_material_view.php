@@ -4,7 +4,9 @@
 
     $db_handle=new DBController();
     $wo=$_REQUEST['wo'];
-    $basic="SELECT * FROM `boq_item`,boq WHERE boq_item.wo_no='$wo' AND (boq.serial_boq=boq_item.item_id)";
+    $pno=$_REQUEST['pno'];
+    $basic="SELECT * FROM `boq_item`,boq WHERE boq_item.wo_no='$wo' AND (boq.serial_boq=boq_item.item_id) and boq.pno='$pno'";
+    //echo $basic;
     $result_basic=$db_handle->runQuery($basic);
 ?>
 <!DOCTYPE html>

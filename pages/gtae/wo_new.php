@@ -89,6 +89,15 @@
                 <input type="text" class="form-control pull-right" id="datepicker2" name="hd" autocomplete="off">
                 </div>
                 </div>
+              <div class="form-group">
+                <label>Issue Date</label>
+                <div class="input-group date">
+                <div class="input-group-addon">
+                <i class="fa fa-calendar"></i>
+                </div>
+                <input type="text" class="form-control pull-right" id="datepicker3" name="issue" autocomplete="off">
+                </div>
+                </div>
               <!-- /.box-body -->
               </div>
               <div class="box-footer">
@@ -126,6 +135,10 @@
       format: 'dd.mm.yyyy'
     });
     $('#datepicker2').datepicker({
+      autoclose: true,
+      format: 'dd.mm.yyyy'
+    });
+    $('#datepicker3').datepicker({
       autoclose: true,
       format: 'dd.mm.yyyy'
     });

@@ -4,10 +4,11 @@
 
     $db_handle=new DBController();
     //$p=$_REQUEST['p'];
-    $p=105;
-    $basic="SELECT * FROM wo_numbers,wo_status WHERE wo_numbers.id_wo=wo_status.id_wo";
-    echo $basic;
-    $result_basic=$db_handle->runQuery($basic);
+    $general="select pno,project_location from general";
+    $result_general=$db_handle->runQuery($general);
+    
+    //$p=105;
+   
 ?>
 <!DOCTYPE html>
 <html>
@@ -30,14 +31,7 @@
   <link rel="stylesheet" href="../../dist/css/skins/_all-skins.min.css">
   <!-- DataTables -->
   <link rel="stylesheet" href="../../plugins/datatables/dataTables.bootstrap.css">
-  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-  <!--[if lt IE 9]>
-  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-  <![endif]-->
 </head>
-<!-- ADD THE CLASS layout-top-nav TO REMOVE THE SIDEBAR. -->
 <body class="hold-transition skin-blue layout-top-nav">
 <div class="wrapper">
 
@@ -46,17 +40,28 @@
   <div class="content-wrapper">
   <div class="container">
     <section class="content">
-    <div class="row" style="align-content: center;">
-    <div class="col-md-12">
+    <div class="row">
+        <?php
+        foreach($result_general as $row_gen)
+        {
+           // print_r($result_general);
+            $pno=$row_gen['pno'];
+            $location=$row_gen['project_location'];
+            $basic="SELECT * FROM wo_numbers where pno=$pno";
+            //echo $basic;
+            $result_basic=$db_handle->runQuery($basic);
+                
+        ?>
+        
+    <div class="col-md-6">
         <div class="box box-primary">
         <div class="box-header with-border">
-        <h3 class="box-title">Work Orders</h3>
+        <h3 class="box-title"><?php echo "$location (SP $pno)";?></h3>
         </div>
         <div class="box-body">
         <table class="table table-bordered" id="table4">
         <tr>
             <th>#</th>
-            <th>Pno</th>
             <th>WO Number</th>
             <th>WO Value</th>
             <th>Start Date</th>
@@ -71,19 +76,49 @@
                 {
                     $i++;
                     $pno=$row['pno'];
-                    $wo_no=$row['work__order_no'];
+                    $wo_no=$row['work_order_no'];
                     $wo_val=$row['value'];
+                    $wo_val=number_format($wo_val,3);
                     $st=$row['start'];
+                    if(strcmp($st, '0000-00-00')==0)
+                    {
+                        $st="-";
+                       
+                    }
+                    else {
+                        $st= strtotime($st);
+                        $st= date('d-M-y', $st);
+                    }
                     $et=$row['end'];
-                    $status=$row['status'];
+                    if(strcmp($et, '0000-00-00')==0)
+                    {
+                        $et="-";
+                       
+                    }
+                    else {
+                        $et= strtotime($et);
+                        $et= date('d-M-y', $et);
+                    }
+                    $issue=$row['issue'];
+                    if(strcmp($issue, '0000-00-00')==0)
+                    {
+                        $issue="-";
+                       
+                    }
+                    else {
+                        $issue= strtotime($issue);
+                        $issue= date('d-M-y', $issue);
+                    }
+                    
+                    //$status=$row['status'];
                     echo "<tr>";
                     echo "<td>$i</td>";
-                    echo "<td>SP $pno</td>";
                     echo "<td>$wo_no</td>";
                     echo "<td>$wo_val</td>";
                     echo "<td>$st</td>";
                     echo "<td>$et</td>";
-                    if($status==0)
+                    echo "<td>Issued</td>";
+                   /* if($status==0)
                     {
                         echo "<td>Issued</td>";
                     }
@@ -106,18 +141,20 @@
                     else if($status==5)
                     {
                         echo "<td>Cancelled</td>";
-                    }
+                    }*/
                     echo "</tr>";
                     
                     
                 }
-
-            }
         ?>
        </table>
         </div>
         </div>
     </div>
+        <?php
+            }
+        }
+        ?>
     </div>
     </section>
     </div>

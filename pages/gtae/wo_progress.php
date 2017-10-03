@@ -93,7 +93,7 @@ session_start();
         </select>
         </div>
         <div class="box-footer">
-        <button type="submit" class="btn btn-primary">Update</button>
+        <button type="submit" class="btn btn-primary">Add Activity</button>
         </div>
         </form>
         </div>

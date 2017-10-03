@@ -44,6 +44,13 @@
     else {
         $hd='';
     }
+    if(isset($_POST['issue']))
+    {
+       $issue=$_POST['issue'];
+    }
+    else {
+        $issue='';
+    }
     
     
     
@@ -54,12 +61,17 @@
     $hd= strtotime($hd);
     $hd= date('Y-m-d',$hd);
     
+    $issue= strtotime($issue);
+    $issue= date('Y-m-d',$issue);
+    
+    echo "issue:$issue";
+    
     
     $test="select * from wo_numbers where work_order_no='$wo_no'";
     $result_test=$db_handle->runQuery($test);
     if(!empty($result_test))
     {
-        $basic="update wo_numbers set start='$st',end='$hd',value='$wo_val',description='$desc' where work_order_no='$wo_no'";
+        $basic="update wo_numbers set start='$st',end='$hd',value=$wo_val,description='$desc',issue='$issue' where work_order_no='$wo_no'";
         echo $basic;
         $result_basic=$db_handle->runUpdate($basic);
         if(!empty($result_basic))
@@ -70,8 +82,8 @@
     }
     else 
     {
-        $basic="INSERT INTO `wo_numbers`(`pno`, `work_order_no`, `start`, `end`, `value`, `description`) "
-            . "VALUES ($pno,'$wo_no','$st','$hd','$wo_val','$desc')";
+        $basic="INSERT INTO `wo_numbers`(`pno`, `work_order_no`, `start`, `end`, `value`, `description`,issue) "
+            . "VALUES ($pno,'$wo_no','$st','$hd',$wo_val,'$desc','$issue')";
         echo $basic;
         $result_basic=$db_handle->runUpdate($basic);
         if(!empty($result_basic))

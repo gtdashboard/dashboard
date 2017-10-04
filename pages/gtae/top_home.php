@@ -152,7 +152,7 @@ while($now<$today)
 <body class="hold-transition skin-blue layout-top-nav">
 <div class="wrapper">
 
- <?php require 'header.php';?>
+ <?php require 'header_main.php';?>
   <!-- Full Width Column -->
   <div class="content-wrapper">
     <div class="container" style="width:100%">

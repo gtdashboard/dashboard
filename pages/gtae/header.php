@@ -15,13 +15,13 @@
         <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Finance<span class="caret"></span></a>
         <ul class="dropdown-menu" role="menu">
-        <li><a href="afe_form.php" style="color:#00b9d8">New AFE</a></li>
+            <li><a href="../afe/afe_form.php" style="color:#00b9d8">New AFE</a></li>
         <li class="divider"></li>
-        <li><a href="afp_form.php" style="color:#00b9d8">New AFP</a></li>
+        <li><a href="../afp/afp_form.php" style="color:#00b9d8">New AFP</a></li>
         <li class="divider"></li>
-        <li><a href="afe_update.php" style="color:#00b9d8">Track AFE</a></li>
+        <li><a href="../afe/afe_update.php" style="color:#00b9d8">Track AFE</a></li>
         <li class="divider"></li>
-        <li><a href="afp_update.php" style="color:#00b9d8">Track AFP</a></li>
+        <li><a href="../afp/afp_update.php" style="color:#00b9d8">Track AFP</a></li>
         <li class="divider"></li>
         <li><a href="#" style="color:#00b9d8">View Issued Payments</a></li>
         </ul>
@@ -31,17 +31,19 @@
         <ul class="dropdown-menu" role="menu">
         <li><a href="# style="color:#00b9d8"">Enter New Report</a></li>
         <li class="divider"></li>
-        <li><a href="daily_status.php" style="color:#00b9d8">View Daily Status</a></li>
+        <li><a href="../daily/daily_status.php" style="color:#00b9d8">View Daily Status</a></li>
         </ul>
         </li>
         <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Employee<span class="caret"></span></a>
         <ul class="dropdown-menu" role="menu">
-        <li><a href="emp_form.php" style="color:#00b9d8">Enter New Employee</a></li>
+            <li><a href="../employee/emp_form.php" style="color:#00b9d8">Enter New Employee</a></li>
         <li class="divider"></li>
-        <li><a href="emp_form.php" style="color:#00b9d8">Update Renewed Status</a></li>
+        <li><a href="../employee/emp_form.php" style="color:#00b9d8">Update Renewed Status</a></li>
         <li class="divider"></li>
-        <li><a href="emp_expiry.php" style="color:#00b9d8">View Expiry Status</a></li>
+        <li><a href="../employee/emp_expiry.php" style="color:#00b9d8">View Expiry Status</a></li>
+         <li class="divider"></li>
+        <li><a href="../employee/emp_search.php" style="color:#00b9d8">Employee Search</a></li>
         </ul>
         </li>
         <li class="dropdown">
@@ -65,25 +67,25 @@
         <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">WO Material<span class="caret"></span></a>
         <ul class="dropdown-menu" role="menu">
-            <li><a href="wo_material_view_front.php" style="color:#00b9d8">View by WO</a></li>
+            <li><a href="../wo_materials/wo_material_view_front.php" style="color:#00b9d8">View by WO</a></li>
         <li class="divider"></li>
-        <li><a href="wo_mat_new.php" style="color:#00b9d8">Add New</a></li>
+        <li><a href="../wo_materials/wo_mat_new.php" style="color:#00b9d8">Add New</a></li>
         <li class="divider"></li>
-        <li><a href="wo_material_update_front.php" style="color:#00b9d8">Update</a></li>
+        <li><a href="../wo_materials/wo_material_update_front.php" style="color:#00b9d8">Update</a></li>
         </ul>
         </li>
         <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Work Orders<span class="caret"></span></a>
         <ul class="dropdown-menu" role="menu">
-        <li><a href="wo_details_table.php" style="color:#00b9d8">View</a></li>
+            <li><a href="../work_orders/wo_details_table.php" style="color:#00b9d8">View</a></li>
         <li class="divider"></li>
-        <li><a href="wo_status.php" style="color:#00b9d8">Work Order Status</a></li>
+        <li><a href="../work_orders/wo_status.php" style="color:#00b9d8">Work Order Status</a></li>
         <li class="divider"></li>
-        <li><a href="wo_new.php" style="color:#00b9d8">Add New Work Order</a></li>
+        <li><a href="../work_orders/wo_new.php" style="color:#00b9d8">Add New Work Order</a></li>
         <li class="divider"></li>
-        <li><a href="wo_progress_entry.php" style="color:#00b9d8">Work Order Progress Update</a></li>
+        <li><a href="../work_orders/wo_progress_entry.php" style="color:#00b9d8">Work Order Progress Update</a></li>
         <li class="divider"></li>
-        <li><a href="wo_progress.php" style="color:#00b9d8">Work Order Progress Activity</a></li>
+        <li><a href="../work_orders/wo_progress.php" style="color:#00b9d8">Work Order Progress Activity</a></li>
         </ul>
         </li>
         </ul>

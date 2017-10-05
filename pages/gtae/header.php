@@ -23,7 +23,7 @@
         <li class="divider"></li>
         <li><a href="../afp/afp_update.php" style="color:#00b9d8">Track AFP</a></li>
         <li class="divider"></li>
-        <li><a href="#" style="color:#00b9d8">View Issued Payments</a></li>
+        <li><a href="../afe/afe_afp_list.php" style="color:#00b9d8">View Issued Payments</a></li>
         </ul>
         </li>
         <li class="dropdown">

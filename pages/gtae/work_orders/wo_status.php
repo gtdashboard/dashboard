@@ -81,7 +81,7 @@ session_start();
             <option value='0'>Issued</option>
             <option value='1'>Commenced</option>
             <option value='2'>Invoiced</option>
-            <option value='3'>Completed</option>
+            <option value='3'>Handed Over</option>
             <option value='4'>On hold</option>
             <option value='5'>Cancelled</option>   
         </select>

@@ -124,7 +124,7 @@
                         }
                         else if($status==3)
                         {
-                            echo "<td>Completed</td>";
+                            echo "<td>Handed Over</td>";
                         }
                         else if($status==4)
                         {

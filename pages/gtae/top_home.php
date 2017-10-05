@@ -21,11 +21,15 @@
                 $cum_ug1=$cum_row['cum_ug'];
             }
             $sum=($cum_ag1+$cum_ug1)/1000;
-            $wk_array[] = array(
-            'label' => $wo,
-            'value' => "$sum",
-            'color' =>  '#ff8693',
-        );
+            if($sum!=0)
+            {
+                 $wk_array[] = array(
+                'label' => $wo,
+                'value' => "$sum",
+                'color' =>  '#ff8693',
+                );
+            }
+               
         }
         
     }
@@ -46,11 +50,15 @@
                 $cum_ug1=$cum_row['cum_ug'];
             }
             $sum=$cum_ag1+$cum_ug1;
-            $nk_array[] = array(
-            'label' => $wo,
-            'value' => "$sum",
-            'color' =>  '#ff8693',
-            );
+            if($sum!=0)
+            {
+                $nk_array[] = array(
+                'label' => $wo,
+                'value' => "$sum",
+                'color' =>  '#ff8693',
+                );
+            }
+            
         }
         
     }
@@ -588,7 +596,7 @@ while($now<$today)
     type: 'bar2d',
     renderAt: 'chart-container3',
     "width": "100%",
-    "height": '200',
+    "height": '250',
     dataFormat: 'json',
     dataSource: {
         "chart": {
@@ -645,7 +653,7 @@ while($now<$today)
     type: 'bar2d',
     renderAt: 'chart-containerwk',
     "width": "100%",
-    "height": '150',
+    "height": '200',
     dataFormat: 'json',
     dataSource: {
         "chart": {
@@ -685,7 +693,7 @@ while($now<$today)
     type: 'bar2d',
     renderAt: 'chart-containernk',
     "width": "100%",
-    "height": '150',
+    "height": '200',
     dataFormat: 'json',
     dataSource: {
         "chart": {

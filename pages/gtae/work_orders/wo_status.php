@@ -42,12 +42,17 @@ session_start();
                     }
                 }
             }
+             $val='';
+            if(isset($_REQUEST['wo_no']))
+            {
+                $val=$_REQUEST['wo_no'];
+            }
         ?>
         </select>
         </div>
         <div class="form-group">
         <label for="exampleInputPassword1">Choose Work Order Number</label>
-        <select class="form-control" name="wo" id="wo">
+        <select class="form-control" name="wo" id="wo" selected='<?php echo $val;?>'>
         <?php
         $basic="SELECT distinct(work_order_no) FROM wo_numbers WHERE pno=$p";
         $result_basic=$db_handle->runQuery($basic);
@@ -56,7 +61,15 @@ session_start();
             foreach ($result_basic as $row)
             {
                 $wno=$row['work_order_no'];
-                echo "<option value='$wno'>$wno</option>";
+                if(strcmp($wno,$val)==0)
+                { 
+                    echo "<option value='$wno' selected='selected'>$wno </option>";
+                    
+                }
+                else {
+                    echo "<option value='$wno' >$wno </option>";
+                }
+                
             }
         }
         ?>
@@ -68,9 +81,9 @@ session_start();
             <option value='0'>Issued</option>
             <option value='1'>Commenced</option>
             <option value='2'>Invoiced</option>
-            <option value='2'>Completed</option>
-            <option value='3'>On hold</option>
-            <option value='4'>Cancelled</option>   
+            <option value='3'>Completed</option>
+            <option value='4'>On hold</option>
+            <option value='5'>Cancelled</option>   
         </select>
         </div>
         <div class="form-group">

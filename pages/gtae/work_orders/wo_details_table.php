@@ -95,11 +95,11 @@
                     //$status=$row['status'];
                     echo "<tr>";
                     echo "<td>$i</td>";
-                    echo "<td>$wo_no</td>";
+                    echo "<td><a href='wo_search.php?wno=$wo_no'>$wo_no</a></td>";
                     echo "<td>$wo_val</td>";
                     echo "<td>$st</td>";
                     echo "<td>$et</td>";
-                    $stat="select status from wo_status where wo_status.id_wo=$wo_id and date=(select max(date) from  wo_status where wo_status.id_wo=$wo_id)";
+                    $stat="select status from wo_status where wo_status.id_wo=$wo_id and date_inserted=(select max(date_inserted) from  wo_status where wo_status.id_wo=$wo_id)";
                     $result_stat=$db_handle->runQuery($stat);
                     if(empty($result_stat))
                     {

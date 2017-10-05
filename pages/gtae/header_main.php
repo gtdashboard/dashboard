@@ -85,6 +85,8 @@
         <li><a href="work_orders/wo_progress_entry.php" style="color:#00b9d8">Work Order Progress Update</a></li>
         <li class="divider"></li>
         <li><a href="work_orders/wo_progress.php" style="color:#00b9d8">Work Order Progress Activity</a></li>
+         <li class="divider"></li>
+        <li><a href="work_orders/wo_search.php" style="color:#00b9d8">Work Order Search</a></li>
         </ul>
         </li>
         </ul>

@@ -5,6 +5,7 @@
     if(isset($_POST['wo_no']))
     {
         $wo_no=$_POST['wo_no'];
+        $wo_no= strtoupper($wo_no);
     }
     else {
         $wo_no='';
@@ -77,7 +78,7 @@
         if(!empty($result_basic))
         {
             echo json_encode($result_basic);
-            header("Location:wo_status.php");
+            header("Location:wo_status.php?wo_no=$wo_no");
         }
     }
     else 
@@ -89,7 +90,7 @@
         if(!empty($result_basic))
         {
             echo json_encode($result_basic);
-            header("Location:wo_status.php");
+            header("Location:wo_status.phpwo_no=$wo_no");
         }
     }
     

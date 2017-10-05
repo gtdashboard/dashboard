@@ -1,17 +1,93 @@
+<?php require '../scripts.php';?>
+<script>
+function setDetails(id)
+{
+    console.log("hi");
+    $.ajax({
+	type: "POST",
+	url: "wo_info.php?key="+id,
+	beforeSend: function(){
+		
+	},
+	success: handleData
+	});
+}
+function handleData(data)
+{
+    console.log(data);
+    
+    if(data.length>5)
+    {
+        console.log(data.length);
+        JSON.parse(data, (key, value) => {
+        if(key=='value_wo')
+        {
+            console.log(value);
+            document.getElementById("wo_val").value=value
+        }
+        if(key=='description')
+        {
+            console.log(value);
+            document.getElementById("desc").value=value
+        }
+        if(key=='start_f')
+        {
+            console.log(value);
+            document.getElementById("st").value=value;
+        }
+        if(key=='end_f')
+        {
+            console.log(value);
+            document.getElementById("end").value=value;
+            
+        }
+        if(key=='issue_f')
+        {
+            console.log(value);
+            document.getElementById("issue").value=value;
+        }
+        if(key=='pno')
+        {
+            console.log(value);
+            document.getElementById('pno').value=value;
+        }
+        
+        });
+    }
+    else 
+    {
+        document.getElementById("wo_val").value=''
+        document.getElementById("desc").value=''
+        document.getElementById("st").value=''
+        document.getElementById("end").value=''
+        document.getElementById("issue").value=''
+        document.getElementById('pno').value=''
+    }
+    console.log(data);
+}
+</script>
 <!DOCTYPE html>
 <html>
 <?php $title="New WO";?>
 <?php require '../head.php'?>
 <div class="wrapper">
 <?php require '../header.php';?>
+    <?php
+    $wno='';
+    if(isset($_REQUEST['wno']))
+    {
+        $wno=$_REQUEST['wno'];
+        echo "<script type='text/javascript'>setDetails('$wno');</script>";
+    }
+    ?>
   <!-- Full Width Column -->
   <div class="content-wrapper">
     <div class="container">
     <section class="content">
         <div class="row" style="align-content: center;">
         <!-- left column -->
-        <div class="col-md-3"></div>
-        <div class="col-md-6">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
           <!-- general form elements -->
           <div class="box box-primary">
             <div class="box-header with-border">
@@ -50,15 +126,15 @@
                 </div>
                 <div class="form-group">
                   <label for="exampleInputEmail1">WO Number</label>
-                  <input type="text" class="form-control" name="wo_no" placeholder="WO Number">
+                  <input type="text" class="form-control" name="wo_no" value='<?php echo $wno;?>' placeholder="WO Number" onkeyup="setDetails(this.value)" autocomplete="off">
                 </div>
                 <div class="form-group">
                   <label for="exampleInputPassword1">WO Value</label>
-                  <input type="text" class="form-control"  name="wo_val" >
+                  <input type="text" class="form-control"  name="wo_val" id="wo_val">
                 </div>
                 <div class="form-group">
                   <label for="exampleInputPassword1">Description</label>
-                  <textarea class="form-control"  name="desc" ></textarea>
+                  <textarea class="form-control"  name="desc" id="desc"></textarea>
                 </div>
                 <div class="form-group">
                 <label>Start Date:</label>
@@ -66,7 +142,7 @@
                 <div class="input-group-addon">
                 <i class="fa fa-calendar"></i>
                 </div>
-                <input type="text" class="form-control pull-right" id="datepicker" name="st" autocomplete="off">
+                <input type="text" class="form-control pull-right" id="st" name="st" autocomplete="off">
                 </div>
                 </div>
                 <div class="form-group">
@@ -75,7 +151,7 @@
                 <div class="input-group-addon">
                 <i class="fa fa-calendar"></i>
                 </div>
-                <input type="text" class="form-control pull-right" id="datepicker2" name="hd" autocomplete="off">
+                <input type="text" class="form-control pull-right" id="end" name="hd" autocomplete="off">
                 </div>
                 </div>
               <div class="form-group">
@@ -84,7 +160,7 @@
                 <div class="input-group-addon">
                 <i class="fa fa-calendar"></i>
                 </div>
-                <input type="text" class="form-control pull-right" id="datepicker3" name="issue" autocomplete="off">
+                <input type="text" class="form-control pull-right" id="issue" name="issue" autocomplete="off">
                 </div>
                 </div>
               <!-- /.box-body -->
@@ -97,29 +173,36 @@
           <!-- /.box -->
         </div>
         <!--/.col (right) -->
-         <div class="col-md-3"></div>
+         <div class="col-md-2"></div>
       </div>
       <!-- /.row -->
     </section>
     </div>
   </div>
 </div>
-<?php require '../scripts.php';?>
 
 <script>
     //Date picker
-    $('#datepicker').datepicker({
+    $('#st').datepicker({
       autoclose: true,
       format: 'dd.mm.yyyy'
     });
-    $('#datepicker2').datepicker({
+    $('#end').datepicker({
       autoclose: true,
       format: 'dd.mm.yyyy'
     });
-    $('#datepicker3').datepicker({
+    $('#issue').datepicker({
       autoclose: true,
       format: 'dd.mm.yyyy'
     });
+</script>
+<script>
+        $("#wo_no").keyup(function(){
+        var id=document.getElementById("wo_no").value;
+        console.log("id wno");
+        console.log(id);
+        setDetails(id);
+        });
 </script>
 </body>
 </html>

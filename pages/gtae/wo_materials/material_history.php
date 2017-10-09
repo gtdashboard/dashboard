@@ -40,7 +40,6 @@
                 <th>Material Name</th>
                 <th>Unit</th>
                 <th>Price</th>
-                <th>Available</th>
                 <th>Used</th>
                 </tr>
                 <tr>
@@ -69,7 +68,6 @@
                     echo "<td>$item</td>";
                     echo "<td>$unit</td>";
                     echo "<td>$sp</td>";
-                    echo "<td>$est</td>";
                     echo "<td>$sum</td>";
                 }
                 ?>

@@ -80,7 +80,7 @@ function handleData(data)
 </script>
 <!DOCTYPE html>
 <html>
-<?php $title="Employee";?>
+<?php $title="Work Order";?>
 <?php require '../head.php'?>
 <div class="wrapper">
 <?php require '../header.php';?>

@@ -27,5 +27,5 @@
   <!-- Ionicons -->
   <link rel="stylesheet" href="../../../bower_components/Ionicons/css/ionicons.min.css">
 </head>
-<body class="hold-transition skin-blue layout-top-nav">
+<body class="hold-transition skin-black layout-top-nav">
 

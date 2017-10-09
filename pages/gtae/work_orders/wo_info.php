@@ -58,7 +58,7 @@
                 $response['issue']= date('d M Y', $issue);
                 $response['issue_f']=date('d.m.Y', $issue);
             }
-            $stat="select status from wo_status where wo_status.id_wo=$wo_id and date_inserted=(select max(date_inserted) from  wo_status where wo_status.id_wo=$wo_id)";
+            $stat="select status, from wo_status where wo_status.id_wo=$wo_id and date_inserted=(select max(date_inserted) from  wo_status where wo_status.id_wo=$wo_id)";
             $result_stat=$db_handle->runQuery($stat);
             if(empty($result_stat))
             {
@@ -72,27 +72,27 @@
                 }
                 if($status==0)
                 {
-                    $response['status']= "Issued";
+                    $response['status_issue']= "Issued";
                 }
                 else if($status==1)
                 {
-                    $response['status']= "Commenced";
+                    $response['status_commence']= "Commenced";
                 }
                 else if($status==2)
                 {
-                    $response['status']= "Invoiced";
+                    $response['status_invoice']= "Invoiced";
                 }
                 else if($status==3)
                 {
-                    $response['status']= "Completed";
+                    $response['status_completed']= "Completed";
                 }
                 else if($status==4)
                 {
-                    $response['status']= "On Hold";
+                    $response['status_onhold']= "On Hold";
                 }
                 else if($status==5)
                 {
-                    $response['status']= "Cancelled";
+                    $response['status_cancelled']= "Cancelled";
                 }
             }
         }

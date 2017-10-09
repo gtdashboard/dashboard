@@ -7,8 +7,8 @@ if(isset($_REQUEST['p']))
     $project="sp_".$p;
 }
  else {
-     $p=104;
-     $project="sp_104";
+     $p=105;
+     $project="sp_105";
  }
 $db_handle=new DBController();
 if($p==104)
@@ -19,18 +19,16 @@ else if($p==105)
 {
     $dt='2016-12-18';
 }
-//echo $dt;
 $initial= strtotime($dt);
 $today=Date("Y-m-d");
-//echo $today;
 $final= strtotime($today);
 $now=$dt;
 $category='';
 $sum='';
 while($now<$today)
 {
-    $query="select sum(number) as sumE from worker where date='$now' and pno=$p limit 0,5";
-  //  echo $query;
+    $query="select sum(number) as sumE from worker where date='$now' and pno=$p";
+   // echo $query;
   //  echo "<br>";
     
     $result=$db_handle->runQuery($query);
@@ -42,10 +40,15 @@ while($now<$today)
             //echo $s;
             if($s!=0)
             {
+                if(strcmp($category,'')!=0)
+                {
+                    $category.='|';
+                    $sum.='|';
+                }
             	$rep=strtotime($now);
             	$k=Date("M d",$rep);
-                $category.="$k|";
-            	$sum.="$s|";
+                $category.="$k";
+            	$sum.="$s";
             }
             
             
@@ -55,14 +58,14 @@ while($now<$today)
     $now = strtotime("+1 day", strtotime($now));
     $now=Date("Y-m-d", $now);
 }
-echo $category;
-echo $sum;
+//echo "Cat: ".$category;
+//echo "<br>Sum: ".$sum;
 ?>
 <html>
 <head>
-<title>My first chart using FusionCharts Suite XT</title>
-<script type="text/javascript" src="http://static.fusioncharts.com/code/latest/fusioncharts.js"></script>
-<script type="text/javascript" src="http://static.fusioncharts.com/code/latest/themes/fusioncharts.theme.fint.js?cacheBust=56"></script>
+<title></title>
+<script type="text/javascript" src="fusion/js/fusioncharts.js"></script>
+<script type="text/javascript" src="fusion/js/themes/fusioncharts.theme.fint.js?cacheBust=56"></script>
 <script type="text/javascript">
   FusionCharts.ready(function(){
     var fusioncharts = new FusionCharts({
@@ -73,12 +76,11 @@ echo $sum;
     dataFormat: 'json',
     dataSource: {
         "chart": {
-            "caption": "Unique Website Visitors",
-            "subcaption": "Last year",
-            "yaxisname": "Unique Visitors",
+            "caption": "Manpower Mobilized",
+            "yaxisname": "Manpower",
             "xaxisname": "Date",
-            "yaxisminValue": "800",
-            "yaxismaxValue": "1400",
+            "yaxisminValue": "60",
+            "yaxismaxValue": "800",
             "pixelsPerPoint": "0",
             "pixelsPerLabel": "30",
             "lineThickness": "1",
@@ -88,12 +90,11 @@ echo $sum;
             "theme": "fint"
         },
         "categories": [{
-            "category": <?php echo $category;?>
-                   
+            "category": "<?php echo $category?>"
         }],
-        "dataset": [{
-            "seriesname": "sp104",
-            "data": <?php echo $sum;?>
+         "dataset": [{
+            "seriesname": "SP <?php echo $p?>",
+            "data":  "<?php echo $sum?>"
         }]
     }
 }

@@ -56,6 +56,10 @@
                 foreach($result_basic as $row)
                 {
                     $i++;
+                    if(strcmp($row['work_order_no'],'')==0)
+                    {
+                        continue;
+                    }
                     $pno=$row['pno'];
                     $wo_id=$row['id_wo'];
                     $wo_no=$row['work_order_no'];
@@ -118,11 +122,11 @@
                         {
                             echo "<td>Commenced</td>";
                         }
-                        else if($status==2)
+                        else if($status==3)
                         {
                             echo "<td>Invoiced</td>";
                         }
-                        else if($status==3)
+                        else if($status==2)
                         {
                             echo "<td>Handed Over</td>";
                         }

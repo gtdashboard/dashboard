@@ -4,137 +4,7 @@
     $db_handle=new DBController();
     $m=date('m');
     $y=date('Y');
-    $query_wk="SELECT `work_order_no` FROM `work_order` WHERE date_done=(SELECT max(date_done) from work_order where pno=104) and pno=104";
-    $result_wk=$db_handle->runQuery($query_wk);
-    if(!empty($result_wk))
-    {
-        foreach ($result_wk as $row)
-        {
-            $wo1=$row['work_order_no'];
-            $wo= substr($wo1,13);
-            $wo="WO $wo";
-            $cum_query="SELECT sum( ag ) AS cum_ag, sum( ug ) AS cum_ug FROM work_order WHERE work_order_no='$wo1'";
-            $cum_result=$db_handle->runQuery($cum_query);
-            foreach ($cum_result as $cum_row)
-            {
-                $cum_ag1=$cum_row['cum_ag'];
-                $cum_ug1=$cum_row['cum_ug'];
-            }
-            $sum=($cum_ag1+$cum_ug1)/1000;
-            if($sum!=0)
-            {
-                 $wk_array[] = array(
-                'label' => $wo,
-                'value' => "$sum",
-                'color' =>  '#ff8693',
-                );
-            }
-               
-        }
-        
-    }
-    $query_nk="SELECT `work_order_no` FROM `work_order` WHERE date_done=(SELECT max(date_done) from work_order where pno=105) and pno=105";
-    $result_nk=$db_handle->runQuery($query_nk);
-    if(!empty($result_nk))
-    {
-        foreach ($result_nk as $row)
-        {
-            $wo1=$row['work_order_no'];
-            $wo= substr($wo1,13);
-            $wo="WO $wo";
-            $cum_query="SELECT sum( ag ) AS cum_ag, sum( ug ) AS cum_ug FROM work_order WHERE work_order_no='$wo1'";
-            $cum_result=$db_handle->runQuery($cum_query);
-            foreach ($cum_result as $cum_row)
-            {
-                $cum_ag1=$cum_row['cum_ag'];
-                $cum_ug1=$cum_row['cum_ug'];
-            }
-            $sum=$cum_ag1+$cum_ug1;
-            if($sum!=0)
-            {
-                $nk_array[] = array(
-                'label' => $wo,
-                'value' => "$sum",
-                'color' =>  '#ff8693',
-                );
-            }
-            
-        }
-        
-    }
-
-$today=Date("Y-m-d");
-//echo $today;
-$final= strtotime($today);
-$now='2017-02-02';
-
-while($now<$today)
-{
-    $query="select sum(number) as sumE from worker where date='$now' and pno=104";
-    //echo $query;
-    
-    $result=$db_handle->runQuery($query);
-    if(!empty($result))
-    {
-        foreach($result as $row)
-        {
-            $s=$row['sumE'];
-            //echo $s;
-            if($s!=0)
-            {
-            	$rep=strtotime($now);
-            	$k=Date("d.M.Y",$rep);
-            	$man_arraywk[] = array(
-            	'label' => $k,
-            	'value' => $s,
-            	
-            	"stepSkipped"=> false,
-            	"appliedSmartLabel"=> true,
-            	"link" => "print/print_page1.php?dt=$now&p=104"
-            	);
-            }
-            
-            
-        }
-    }
-    $now = strtotime("+1 day", strtotime($now));
-    $now=Date("Y-m-d", $now);
-}
-
-$now='2016-12-18';
-while($now<$today)
-{
-    $query="select sum(number) as sumE from worker where date='$now' and pno=105";
-    //echo $query;
-    
-    $result=$db_handle->runQuery($query);
-    if(!empty($result))
-    {
-        foreach($result as $row)
-        {
-            $s=$row['sumE'];
-            //echo $s;
-            if($s!=0)
-            {
-            	$rep=strtotime($now);
-            	$k=Date("d.M.Y",$rep);
-            	$man_arraynk[] = array(
-            	'label' => $k,
-            	'value' => $s,
-            	
-            	"stepSkipped"=> false,
-            	"appliedSmartLabel"=> true,
-            	"link" => "print/print_page1.php?dt=$now&p=105"
-            	);
-            }
-            
-            
-        }
-    }
-    $now = strtotime("+1 day", strtotime($now));
-    $now=Date("Y-m-d", $now);
-}
-//echo json_encode($man_arraynk);
+    $today=Date("Y-m-d");
 ?>
 <!DOCTYPE html>
 <html>
@@ -156,9 +26,12 @@ while($now<$today)
   <!-- AdminLTE Skins. Choose a skin from the css/skins
        folder instead of downloading all of them to reduce the load. -->
   <link rel="stylesheet" href="../../dist/css/skins/_all-skins.min.css">
+  
+  <script type="text/javascript" src="../../fusion/js/fusioncharts.js"></script>
+  <script type="text/javascript" src="../../fusion/js/themes/fusioncharts.theme.fint.js?cacheBust=56"></script>
 </head>
 <!-- ADD THE CLASS layout-top-nav TO REMOVE THE SIDEBAR. -->
-<body class="hold-transition skin-blue layout-top-nav">
+<body class="hold-transition skin-purple  layout-top-nav">
 <div class="wrapper">
 
  <?php require 'header_main.php';?>
@@ -167,118 +40,380 @@ while($now<$today)
     <div class="container" style="width:100%">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-         <!-- =========================================================== --> 
+         <!-- ======================PROJECT INFO=============================== --> 
         <div class="row">
         <?php
             $query_basic="SELECT * FROM general";
             $result_basic=$db_handle->runQuery($query_basic);
-            foreach ($result_basic as $row) {
+            foreach ($result_basic as $row) 
+            {
                $elapse= elapse($row['commence_date'], $row['finish_date']) ;
+               $query_consumed="SELECT SUM(value) FROM wo_numbers where pno=". $row['pno'];
+               $result_consumed=$db_handle->runQuery($query_consumed);
+               foreach ($result_consumed as $row_consumed) 
+                {
+                   $consumed_percentage=$row_consumed['SUM(value)']/$row['contract_value']*100;
+                }
         ?>
         
         <div class="col-md-3 col-sm-6 col-xs-12">
-          <div class="info-box bg-aqua">
+            <div class="info-box bg-gray">
             <span class="info-box-icon"><i class="fa fa-usd"></i></span>
             <div class="info-box-content">
-              <span class="info-box-text">Contract Value(SP <?php echo $row['pno'];?>)</span>
-              <span class="info-box-number"><?php echo $row['contract_value'];?></span>
+            <span class="info-box-text">Contract Value(SP <?php echo $row['pno'];?>)</span>
+            <span class="info-box-number"><?php echo number_format($row['contract_value']);?></span>
 
-              <div class="progress">
-                <div class="progress-bar" style="width: 12%"></div>
-              </div>
-                  <span class="progress-description">
-                    12% Value Consumed 
-                  </span>
+            <div class="progress">
+            <div class="progress-bar" style="width: <?php echo number_format($consumed_percentage);?>%"></div>
             </div>
-            <!-- /.info-box-content -->
-          </div>
-          <!-- /.info-box -->
+            <span class="progress-description">
+            <?php echo number_format($consumed_percentage);?>% Value Consumed 
+            </span>
+            </div>
         </div>
-        <!-- /.col -->
+        </div>
         <div class="col-md-3 col-sm-6 col-xs-12">
-          <div class="info-box bg-yellow">
+            <div class="info-box bg-purple">
             <span class="info-box-icon"><i class="fa fa-calendar"></i></span>
             <div class="info-box-content">
-              <span class="info-box-text">Project Duration(SP <?php echo $row['pno'];?>)</span>
-              <span class="info-box-number"><?php echo $row['contract_period'];?></span>
+            <span class="info-box-text">Project Duration(SP <?php echo $row['pno'];?>)</span>
+            <span class="info-box-number"><?php echo $row['contract_period'];?></span>
 
-              <div class="progress">
-                  <div class="progress-bar" style="width: <?php echo $elapse;?>%"></div>
-              </div>
-                  <span class="progress-description">
-                    <?php echo $elapse;?>% Time Elapsed
-                  </span>
+            <div class="progress">
+            <div class="progress-bar" style="width: <?php echo $elapse;?>%"></div>
             </div>
-            <!-- /.info-box-content -->
+            <span class="progress-description">
+            <?php echo $elapse;?>% Time Elapsed
+            </span>
+            </div>
           </div>
-          <!-- /.info-box -->
         </div>
-        <!-- /.col -->
         <?php }?>
-        </div>
+    </div>
+    
+    <!-- ======================WORK ORDER CHARTS=============================== --> 
+    <div class="row">
+    <?php
+            $query_basic="SELECT * FROM general";
+            $result_basic=$db_handle->runQuery($query_basic);
+            foreach ($result_basic as $row_project) 
+            {
+                $pno=$row_project['pno'];
+              
+                $query_wo="SELECT distinct(wo_numbers.work_order_no) as work_order_no,wo_status.id_wo as id_wo,wo_numbers.start as start_date,wo_numbers.end as end_date  "
+                            . "FROM wo_status,wo_numbers "
+                            . "WHERE STATUS =1 AND wo_status.id_wo NOT IN (SELECT id_wo FROM wo_status WHERE STATUS >1) and wo_numbers.pno=$pno and wo_status.id_wo=wo_numbers.id_wo ORDER BY work_order_no";
 
-    <div class="row">
+    
+                $result_wo=$db_handle->runQuery($query_wo);
+                if(!empty($wo_array))
+                {
+                    unset($wo_array);
+                }
+                if(!empty($wo_label_array))
+                {
+                    unset($wo_label_array);
+                }
+                if(!empty($wo_time_array))
+                {
+                    unset($wo_time_array);
+                }
+                $wo_array[]=array();
+                $wo_label_array[]=array();
+                $wo_time_array[]=array();
+
+                if(!empty($result_wo))
+                {
+                    foreach ($result_wo as $row)
+                    {
+                        $wo1=$row['work_order_no'];
+                        $wo_start_date= $row['start_date'];
+                        $wo_end_date = $row['end_date'];
+                        $id_wo=$row['id_wo'];
+                        $wo= substr($wo1,13);
+                        $wo="WO $wo";
+                        $total_query="SELECT "
+                                . "(SELECT SUM( progress_points ) FROM wo_progress WHERE wo_id =$id_wo)"
+                                . "/"
+                                . "( SELECT SUM( points )"
+                                . " FROM wo_weightage "
+                                . "WHERE id IN(SELECT `activity_id` FROM `wo_progress` WHERE `wo_id` =$id_wo)) *100 as total";
+                        $total_result=$db_handle->runQuery($total_query);
+                        foreach ($total_result as $row)
+                        {
+                           $total= number_format($row['total'], 2);
+                        }
+                        $time_percentage = number_format(((time() - strtotime($wo_start_date))/(24*60*60))/ ((strtotime($wo_end_date)-strtotime($wo_start_date))/(24*60*60))*100);
+
+                        $wo_label_array[] = array('label' => "$wo",);
+                        $wo_array[] = array('value' => "$total", "link" => "work_orders/wo_search.php?wno=$wo1");
+                        $wo_time_array[] = array('value' => "$time_percentage", "link" => "work_orders/wo_search.php?wno=$wo1");
+
+
+                    }
+
+            }
+    ?>
     <div class="col-md-6" style="text-align: center;">
-        <!-- Line chart -->
         <div class="box box-primary">
         <div class="box-header with-border">
         <i class="fa fa-bar-chart-o"></i>
-        <h3 class="box-title">Work Orders NK</h3>
+        <h3 class="box-title">Work Orders (<?php echo $row_project['project_location'];?>)</h3>
         </div>
         <div class="box-body" >
-        <div id="chart-containernk" >FusionCharts XT will load here!</div>
+        <div id="wo_chart<?php echo $pno;?>" >Work Orders will load here!</div>
+        <script type="text/javascript">
+        FusionCharts.ready(function(){
+            console.log("fusion here for wo");
+            var fusionchartswo = new FusionCharts({
+                type: 'mscolumn3d',
+                renderAt: 'wo_chart<?php echo $pno;?>',
+                "width": "100%",
+                "height": '250',
+                dataFormat: 'json',
+                dataSource: {
+                    "chart": {
+                        "caption": "Ongoing Work Order Status (SP <?php echo $pno;?> )",
+                        "yAxisName": "% Completion",
+                        "numbersuffix": "%",
+                        "plotFillAlpha": "80",
+                        "paletteColors": "#0075c2,#605ca8",
+                        "baseFontColor": "#333333",
+                        "baseFont": "Helvetica Neue,Arial",
+                        "captionFontSize": "14",
+                        "subcaptionFontSize": "14",
+                        "subcaptionFontBold": "0",
+                        "showBorder": "0",
+                        "bgColor": "#ffffff",
+                        "showShadow": "1",
+                        "canvasBgColor": "#ffffff",
+                        "canvasBorderAlpha": "0",
+                        "divlineAlpha": "100",
+                        "divlineColor": "#999999",
+                        "divlineThickness": "1",
+                        "yAxisMaxValue": "110",
+                        "divLineIsDashed": "1",
+                        "divLineDashLen": "1",
+                        "divLineGapLen": "1",
+                        "usePlotGradientColor": "0",
+                        "showplotborder": "0",
+                        "valueFontColor": "#000000",
+                        "showHoverEffect": "1",
+                        "showvalues": "0",
+                        "rotateValues": "1",
+                        "showXAxisLine": "1",
+                        "xAxisLineThickness": "1",
+                        "xAxisLineColor": "#999999",
+                        "showAlternateHGridColor": "0",
+                        "legendBgAlpha": "0",
+                        "legendBorderAlpha": "0",
+                        "legendShadow": "0",
+                        "legendItemFontSize": "10",
+                        "legendItemFontColor": "#666666"
+                },
+                "categories": [
+                    {
+                        "category": <?php echo json_encode($wo_label_array);?>
+                    }
+                ],
+                "dataset": [
+                    {
+                        "seriesname": "Progress Percentage",
+                        "data": <?php echo json_encode($wo_array);?>
+                    },
+                    {
+                        "seriesname": "Time Percentage",
+                        "data": <?php echo json_encode($wo_time_array);?>
+                    }
+                ],
+
+                "trendlines": [
+                    {
+                        "line": [
+                            {
+                                "startvalue": "100",
+                                "color": "#0075c2",
+                                "displayvalue": "100%",
+                                "valueOnRight": "1",
+                                "thickness": "1",
+                                "showBelow": "1",
+                                "tooltext": "100%"
+                            }
+                        ]
+                    }
+                ]
+
+
+
+
+
+
+                }
+            }
+            );
+        fusionchartswo.render();
+        });
+        </script>
         </div>
-        <!-- /.box-body-->
         </div>
-        <!-- /.box -->
     </div>
-    <div class="col-md-6" style="text-align: center;">
-        <!-- Line chart -->
-        <div class="box box-primary">
-        <div class="box-header with-border">
-        <i class="fa fa-bar-chart-o"></i>
-        <h3 class="box-title">Work Orders WK</h3>
-        </div>
-        <div class="box-body" >
-        <div id="chart-containerwk" >FusionCharts XT will load here!</div>
-        </div>
-        <!-- /.box-body-->
-        </div>
-        <!-- /.box -->
+    <?php }?>
     </div>
-    </div>
-         
+    
+    <!-- ======================WORK ORDER VALUE VS INVOICED GAUGE=============================== --> 
     <div class="row">
-    <div class="col-md-6" style="text-align: center;">
-        <!-- Line chart -->
+    <?php
+        $query_basic="SELECT * FROM general";
+        $result_basic=$db_handle->runQuery($query_basic);
+        foreach ($result_basic as $row) {
+        $pno=$row['pno'];
+        $wo_amount_query="select sum(value) as total_am from wo_numbers where pno=$pno";
+        $result_amount=$db_handle->runQuery($wo_amount_query);
+        if(!empty($result_amount))
+        {
+            foreach ($result_amount as $row_amount)
+            {
+                $total_am=$row_amount['total_am'];
+            }
+        }
+       
+        $wo_inv_query="select sum(value) as total_inv from wo_numbers,wo_status where pno=$pno and wo_numbers.id_wo=wo_status.id_wo and status=3";
+        $result_inv=$db_handle->runQuery($wo_inv_query);
+        if(!empty($result_inv))
+        {
+            foreach ($result_inv as $row_inv)
+            {
+                $total_inv=$row_inv['total_inv'];
+            }
+        }
+        
+    ?>
+    <div class="col-md-6 col-sm-12 col-xs-12">
         <div class="box box-primary">
         <div class="box-header with-border">
         <i class="fa fa-bar-chart-o"></i>
-        <h3 class="box-title">Manpower NK</h3>
+        <h3 class="box-title">Total Work Order Value(SP <?php echo $pno;?>)</h3>
         </div>
-        <div class="box-body">
-        <div id="chart-man-nk" >FusionCharts XT will load here!</div>
+            <div class="box-body" style="text-align:center;" >
+        <div id="chart<?php echo $pno;?>">FusionCharts <?php echo $pno;?> will load here!</div>
         </div>
-        <!-- /.box-body-->
         </div>
-        <!-- /.box -->
+    <script type="text/javascript">
+        FusionCharts.ready(function(){
+            console.log("fusion here");
+            var fusionchartsxx = new FusionCharts({
+            type: 'angulargauge',
+            renderAt: 'chart<?php echo $pno;?>',
+            width: '450',
+            height: '250',
+            dataFormat: 'json',
+            dataSource: {
+                "chart": {
+                "caption": "",
+                "manageresize": "1",
+                "origw": "400",
+                "origh": "250",
+                "managevalueoverlapping": "1",
+                "autoaligntickvalues": "1",
+                "bgcolor": "ffffff",
+                "fillangle": "45",
+                "upperlimit": "<?php echo $total_am;?>",
+                "lowerlimit": "0",
+                "majortmnumber": "10",
+                "majortmheight": "8",
+                "showgaugeborder": "0",
+                "gaugeouterradius": "140",
+                "gaugeoriginx": "205",
+                "gaugeoriginy": "206",
+                "gaugeinnerradius": "2",
+                "formatnumberscale": "1",
+                "numberprefix": "KD ",
+                "decmials": "2",
+                "tickmarkdecimals": "0",
+                "pivotradius": "17",
+                "showpivotborder": "1",
+                "pivotbordercolor": "000000",
+                "pivotborderthickness": "5",
+                "pivotfillmix": "FFFFFF,000000",
+                "tickvaluedistance": "10",
+                "showborder": "0"
+                },
+                "colorRange": {
+                    "color": [
+                    {
+                        "minvalue": "0",
+                        "maxvalue": "<?php echo $total_inv;?>",
+                        "code": "605ca8"
+                    },
+                    {
+                        "minvalue": "<?php echo $total_inv;?>",
+                        "maxvalue": "<?php echo $total_am;?>",
+                        "code": "d2d6de"
+                    }
+                ]
+                },
+                "dials": {
+                    "dial": [{
+                        "value": "<?php echo $total_inv;?>",
+                        "borderalpha": "0",
+                        "bgcolor": "000000",
+                        "basewidth": "28",
+                        "topwidth": "1",
+                        "radius": "130"
+                    }]
+                },"annotations": {
+                "groups": [
+                    {
+                        "x": "205",
+                        "y": "207.5",
+                        "items": [
+                            {
+                                "type": "circle",
+                                "x": "0",
+                                "y": "2.5",
+                                "radius": "150",
+                                "startangle": "0",
+                                "endangle": "180",
+                                "fillpattern": "linear",
+                                "fillasgradient": "1",
+                                "fillcolor": "dddddd,666666",
+                                "fillalpha": "100,100",
+                                "fillratio": "50,50",
+                                "fillangle": "0",
+                                "showborder": "1",
+                                "bordercolor": "444444",
+                                "borderthickness": "2"
+                            },
+                            {
+                                "type": "circle",
+                                "x": "0",
+                                "y": "0",
+                                "radius": "145",
+                                "startangle": "0",
+                                "endangle": "180",
+                                "fillpattern": "linear",
+                                "fillasgradient": "1",
+                                "fillcolor": "666666,ffffff",
+                                "fillalpha": "100,100",
+                                "fillratio": "50,50",
+                                "fillangle": "0"
+                            }
+                        ]
+                    }
+            ]
+        }
+        }
+    }
+    );
+    fusionchartsxx.render();
+    });
+    </script>
     </div>
-    <div class="col-md-6" style="text-align: center;">
-    <!-- Line chart -->
-        <div class="box box-primary">
-        <div class="box-header with-border">
-        <i class="fa fa-bar-chart-o"></i>
-        <h3 class="box-title">Manpower WK</h3>
-        </div>
-        <div class="box-body">
-        <div id="chart-man-wk" >FusionCharts XT will load here!</div>
-        </div>
-        <!-- /.box-body-->
-        </div>
-        <!-- /.box -->
+    <?php }?>
     </div>
-    </div>
-    <!-- /.row -->
+    
+    <!-- ======================THREE STATUS CHARTS FOR EQUIPMENT,MANPOWER AND WORK ORDER=============================== --> 
+
     <div class="row">
     <div class="col-md-4" style="text-align: center;">
         <div class="box box-primary">
@@ -315,31 +450,8 @@ while($now<$today)
     </div>
     </div>
     
-    <div class="row">
-    <div class="col-md-4" style="text-align: center;">
-        <div class="box box-primary">
-        <div class="box-header with-border">
-        <i class="fa fa-bar-chart-o"></i>
-        <h3 class="box-title">Work Order Values Completed</h3>
-        </div>
-        <div class="box-body" style="text-align: center;padding: 10px">
-        <div id="chart-container4" >FusionCharts XT will load here!</div>
-        </div>
-        </div>
-    </div>
-    <div class="col-md-8">
-        <div class="box box-primary">
-        <div class="box-header with-border">
-        <i class="fa fa-bar-chart-o"></i>
-        <h3 class="box-title">Work Order Completion</h3>
-        </div>
-        <div class="box-body" style="align-content: center;">
-        <div id="chart-container3">FusionCharts XT will load here!</div>
-        </div>
-        </div>
-    </div>
-    </div>
     
+    <!-- ======================PROCUREMENT CHARTS=============================== --> 
     <div class="row">
     <div class="col-md-12">
         <div class="box box-primary">
@@ -354,6 +466,7 @@ while($now<$today)
     </div> 
     </div>
     
+    <!-- ======================RESIDENCY,EQUIPMENT,GATEPASS EXPIRY TABLE=============================== --> 
     <div class="row">
     <div class="col-md-4">
         <div class="box">
@@ -501,234 +614,8 @@ while($now<$today)
 <script src="../../dist/js/app.min.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="../../dist/js/demo.js"></script>
-<script type="text/javascript" src="../../fusion/js/fusioncharts.js"></script>
-<script type="text/javascript" src="../../fusion/js/themes/fusioncharts.theme.fint.js?cacheBust=56"></script>
 <script type="text/javascript">
   FusionCharts.ready(function(){
-    var fusion_man_wk = new FusionCharts({
-    type: 'area2d',
-    renderAt: 'chart-man-wk',
-    width: '100%',
-    height: '180',
-    dataFormat: 'json',
-    dataSource: {
-        "chart": {
-        "caption": "Total Manpower Data Since Mobilization(<?php echo "SP 104";?>)",
-        "xAxisName": "Dates",
-        "yAxisName": "No. of Manpower at Site",
-         "showValues": "0",
-         "lineThickness": "2",
-        "paletteColors": "#0075c2",
-        "baseFontColor": "#333333",
-        "baseFont": "Helvetica Neue,Arial",
-        "captionFontSize": "14",
-        "subcaptionFontSize": "14",
-        "subcaptionFontBold": "0",
-        "showBorder": "0",
-        "bgColor": "#ffffff",
-        "showShadow": "0",
-        "canvasBgColor": "#ffffff",
-        "canvasBorderAlpha": "0",
-        "divlineAlpha": "100",
-        "divlineColor": "#999999",
-        "divlineThickness": "1",
-        "divLineIsDashed": "1",
-        "divLineDashLen": "1",
-        "divLineGapLen": "1",
-        "showXAxisLine": "1",
-        "xAxisLineThickness": "1",
-        "xAxisLineColor": "#999999",
-        "showAlternateHGridColor": "0",
-        "slantlabels": "1",
-
-        },
-        "data": <?php echo json_encode($man_arraywk);?>
-    }
-}
-);
-    fusion_man_wk.render(); 
-    
-    
-    var fusion_man_nk = new FusionCharts({
-    type: 'area2d',
-    renderAt: 'chart-man-nk',
-    width: '100%',
-    height: '180',
-    dataFormat: 'json',
-    dataSource: {
-        "chart": {
-        "caption": "Total Manpower Data Since Mobilization(<?php echo "SP 105";?>)",
-        "xAxisName": "Dates",
-        "yAxisName": "No. of Manpower at Site",
-         "showValues": "0",
-         "lineThickness": "2",
-        "paletteColors": "#0075c2",
-        "baseFontColor": "#333333",
-        "baseFont": "Helvetica Neue,Arial",
-        "captionFontSize": "14",
-        "subcaptionFontSize": "14",
-        "subcaptionFontBold": "0",
-        "showBorder": "0",
-        "bgColor": "#ffffff",
-        "showShadow": "0",
-        "canvasBgColor": "#ffffff",
-        "canvasBorderAlpha": "0",
-        "divlineAlpha": "100",
-        "divlineColor": "#999999",
-        "divlineThickness": "1",
-        "divLineIsDashed": "1",
-        "divLineDashLen": "1",
-        "divLineGapLen": "1",
-        "showXAxisLine": "1",
-        "xAxisLineThickness": "1",
-        "xAxisLineColor": "#999999",
-        "showAlternateHGridColor": "0",
-        "slantlabels": "1",
-
-        },
-        "data": <?php echo json_encode($man_arraynk);?>
-    }
-}
-);
-    fusion_man_nk.render(); 
-      
-    var fusioncharts3 = new FusionCharts({
-    type: 'bar2d',
-    renderAt: 'chart-container3',
-    "width": "100%",
-    "height": '250',
-    dataFormat: 'json',
-    dataSource: {
-        "chart": {
-            "caption": "Ongoing Work Order Status (North Kuwait)",
-            "yAxisName": "% Completion",
-            "paletteColors": "#0075c2",
-            "bgColor": "#ffffff",
-            "showBorder": "0",
-            "showCanvasBorder": "0",
-            "usePlotGradientColor": "0",
-            "plotBorderAlpha": "10",
-            "placeValuesInside": "1",
-            "valueFontColor": "#ffffff",
-            "showAxisLines": "1",
-            "axisLineAlpha": "25",
-            "divLineAlpha": "10",
-            "alignCaptionWithCanvas": "0",
-            "showAlternateVGridColor": "0",
-            "captionFontSize": "14",
-            "subcaptionFontSize": "14",
-            "subcaptionFontBold": "0",
-            "toolTipColor": "#ffffff",
-            "toolTipBorderThickness": "0",
-            "toolTipBgColor": "#000000",
-            "toolTipBgAlpha": "80",
-            "toolTipBorderRadius": "2",
-            "toolTipPadding": "5",
-        },
-
-        "data": [ {
-            "label": "WO 26",
-            "value": "67",
-            "color":"#ff8693"
-        }, {
-            "label": "WO 28",
-            "value": "93",
-            "color":"#ff8693"
-            
-        }, {
-            "label": "WO 31",
-            "value": "40",
-            "color":"#ff8693"
-        }, {
-            "label": "WO 40",
-            "value": "8",
-            "color":"#ff8693"
-        }]
-    }
-}
-);
-    fusioncharts3.render();
-    
-     var fusionchartswk = new FusionCharts({
-    type: 'bar2d',
-    renderAt: 'chart-containerwk',
-    "width": "100%",
-    "height": '200',
-    dataFormat: 'json',
-    dataSource: {
-        "chart": {
-            "caption": "Ongoing Work Order Status (West Kuwait)",
-            "yAxisName": "Completion (Length in km)",
-            "paletteColors": "#0075c2",
-            "bgColor": "#ffffff",
-            "showBorder": "0",
-            "showCanvasBorder": "0",
-            "usePlotGradientColor": "0",
-            "plotBorderAlpha": "10",
-            "placeValuesInside": "1",
-            "valueFontColor": "#ffffff",
-            "showAxisLines": "1",
-            "axisLineAlpha": "25",
-            "divLineAlpha": "10",
-            "alignCaptionWithCanvas": "0",
-            "showAlternateVGridColor": "0",
-            "captionFontSize": "14",
-            "subcaptionFontSize": "14",
-            "subcaptionFontBold": "0",
-            "toolTipColor": "#ffffff",
-            "toolTipBorderThickness": "0",
-            "toolTipBgColor": "#000000",
-            "toolTipBgAlpha": "80",
-            "toolTipBorderRadius": "2",
-            "toolTipPadding": "5",
-        },
-
-        "data": <?php echo json_encode($wk_array);?>
-    }
-}
-);
-    fusionchartswk.render();
-    
-    var fusionchartsnk = new FusionCharts({
-    type: 'bar2d',
-    renderAt: 'chart-containernk',
-    "width": "100%",
-    "height": '200',
-    dataFormat: 'json',
-    dataSource: {
-        "chart": {
-            "caption": "Ongoing Work Order Status (North Kuwait)",
-            "yAxisName": "Completion (Length in km)",
-            "paletteColors": "#0075c2",
-            "bgColor": "#ffffff",
-            "showBorder": "0",
-            "showCanvasBorder": "0",
-            "usePlotGradientColor": "0",
-            "plotBorderAlpha": "10",
-            "placeValuesInside": "1",
-            "valueFontColor": "#ffffff",
-            "showAxisLines": "1",
-            "axisLineAlpha": "25",
-            "divLineAlpha": "10",
-            "alignCaptionWithCanvas": "0",
-            "showAlternateVGridColor": "0",
-            "captionFontSize": "14",
-            "subcaptionFontSize": "14",
-            "subcaptionFontBold": "0",
-            "toolTipColor": "#ffffff",
-            "toolTipBorderThickness": "0",
-            "toolTipBgColor": "#000000",
-            "toolTipBgAlpha": "80",
-            "toolTipBorderRadius": "2",
-            "toolTipPadding": "5",
-        },
-
-        "data": <?php echo json_encode($nk_array);?>
-    }
-}
-);
-    fusionchartsnk.render();
-    
     var fusioncharts6 = new FusionCharts({
     type: 'bar2d',
     renderAt: 'chart-container6',
@@ -739,6 +626,7 @@ while($now<$today)
         "chart": {
             "caption": "Procurement",
             "yAxisName": "% Completion",
+            
             "paletteColors": "#0075c2",
             "bgColor": "#ffffff",
             "showBorder": "0",
@@ -766,138 +654,31 @@ while($now<$today)
         "data": [ {
             "label": "PO/RSO Value",
             "value": "7000000",
-            "color":"#ff8693"
+            "color":"#605ca8"
         }, {
             "label": "L/C Issued",
             "value": "5000000",
-            "color":"#ff8693"
+            "color":"#605ca8"
             
         }, {
             "label": "L/C under process",
             "value": "2000000",
-            "color":"#ff8693"
+            "color":"#605ca8"
             
         }, {
             "label": "Payments Made",
             "value": "3000000",
-            "color":"#ff8693"
+            "color":"#605ca8"
         }, {
             "label": "Payments Pending",
             "value": "2000000",
-            "color":"#ff8693"
+            "color":"#605ca8"
         }]
     }
 }
 );
     fusioncharts6.render();
-    var fusioncharts4 = new FusionCharts({
-    type: 'angulargauge',
-    renderAt: 'chart-container4',
-    width: '300',
-    height: '200',
-    dataFormat: 'json',
-    dataSource: {
-        "chart": {
-        "caption": "Total Work Order Value",
-        "manageresize": "1",
-        "origw": "400",
-        "origh": "250",
-        "managevalueoverlapping": "1",
-        "autoaligntickvalues": "1",
-        "bgcolor": "ffffff",
-        "fillangle": "45",
-        "upperlimit": "6577670.704",
-        "lowerlimit": "0",
-        "majortmnumber": "10",
-        "majortmheight": "8",
-        "showgaugeborder": "0",
-        "gaugeouterradius": "140",
-        "gaugeoriginx": "205",
-        "gaugeoriginy": "206",
-        "gaugeinnerradius": "2",
-        "formatnumberscale": "1",
-        "numberprefix": "$",
-        "decmials": "2",
-        "tickmarkdecimals": "1",
-        "pivotradius": "17",
-        "showpivotborder": "1",
-        "pivotbordercolor": "000000",
-        "pivotborderthickness": "5",
-        "pivotfillmix": "FFFFFF,000000",
-        "tickvaluedistance": "10",
-        "showborder": "0"
-        },
-        "colorRange": {
-            "color": [
-            {
-                "minvalue": "0",
-                "maxvalue": "2575698",
-                "code": "E48739"
-            },
-            {
-                "minvalue": "2575698",
-                "maxvalue": "6577670",
-                "code": "B41527"
-            }
-        ]
-        },
-        "dials": {
-            "dial": [{
-                "value": "2575698",
-                "borderalpha": "0",
-                "bgcolor": "000000",
-                "basewidth": "28",
-                "topwidth": "1",
-                "radius": "130"
-            }]
-        },
-    "annotations": {
-        "groups": [
-            {
-                "x": "205",
-                "y": "207.5",
-                "items": [
-                    {
-                        "type": "circle",
-                        "x": "0",
-                        "y": "2.5",
-                        "radius": "150",
-                        "startangle": "0",
-                        "endangle": "180",
-                        "fillpattern": "linear",
-                        "fillasgradient": "1",
-                        "fillcolor": "dddddd,666666",
-                        "fillalpha": "100,100",
-                        "fillratio": "50,50",
-                        "fillangle": "0",
-                        "showborder": "1",
-                        "bordercolor": "444444",
-                        "borderthickness": "2"
-                    },
-                    {
-                        "type": "circle",
-                        "x": "0",
-                        "y": "0",
-                        "radius": "145",
-                        "startangle": "0",
-                        "endangle": "180",
-                        "fillpattern": "linear",
-                        "fillasgradient": "1",
-                        "fillcolor": "666666,ffffff",
-                        "fillalpha": "100,100",
-                        "fillratio": "50,50",
-                        "fillangle": "0"
-                    }
-                ]
-            }
-        ]
-    }
-    }
-}
-);
-    fusioncharts4.render();
-    
-     var fusioncharts = new FusionCharts({
+    var fusioncharts = new FusionCharts({
     type: 'hlineargauge',
     renderAt: 'chart-container',
     width: '300',
@@ -935,8 +716,8 @@ while($now<$today)
             {
                 "minvalue": "0",
                 "maxvalue": "43",
-                "code": "f3f718",
-                "bordercolor": "f3f718",
+                "code": "605ca8",
+                "bordercolor": "605ca8",
                 "label": "Existing"
             },
             {
@@ -1005,8 +786,8 @@ while($now<$today)
             {
                 "minvalue": "0",
                 "maxvalue": "380",
-                "code": "f3f718",
-                "bordercolor": "f3f718",
+                "code": "605ca8",
+                "bordercolor": "605ca8",
                 "label": "Existing"
             },
             {
@@ -1073,8 +854,8 @@ while($now<$today)
             {
                 "minvalue": "0",
                 "maxvalue": "25",
-                "code": "f3f718",
-                "bordercolor": "f3f718",
+                "code": "605ca8",
+                "bordercolor": "605ca8",
                 "label": "Completed"
             },
             {

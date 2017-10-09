@@ -45,14 +45,31 @@
         {
             $id_wo=$row['id_wo'];
         }
-        $ins="INSERT INTO `wo_status`( `id_wo`, `status`, `date`) VALUES ($id_wo,$status,'$dt')";
-        echo $ins;
-        $result_ins=$db_handle->runUpdate($ins);
-        if(!empty($result_ins))
+        $select="select * from wo_status where id_wo=$id_wo and status=$status";
+        $result_select=$db_handle->runQuery($select);
+        if(empty($result_select))
         {
-            echo 'inserted';
-            header("Location:wo_details_table.php");
+            $ins="INSERT INTO `wo_status`( `id_wo`, `status`, `date`) VALUES ($id_wo,$status,'$dt')";
+            echo $ins;
+            $result_ins=$db_handle->runUpdate($ins);
+            if(!empty($result_ins))
+            {
+                echo 'inserted';
+                header("Location:wo_details_table.php");
+            }
         }
+        else 
+        {
+            $ins="UPDATE `wo_status` SET `date`='$dt' where id_wo=$id_wo and status=$status";
+            echo $ins;
+            $result_ins=$db_handle->runUpdate($ins);
+            if(!empty($result_ins))
+            {
+                echo 'updated';
+                header("Location:wo_details_table.php");
+            }
+        }
+        
     }
 
 ?>

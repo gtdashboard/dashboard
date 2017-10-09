@@ -80,8 +80,8 @@ session_start();
         <select class="form-control" id="status" name="status">
             <option value='0'>Issued</option>
             <option value='1'>Commenced</option>
-            <option value='2'>Invoiced</option>
-            <option value='3'>Handed Over</option>
+            <option value='2'>Handed Over</option>
+            <option value='3'>Invoiced</option>
             <option value='4'>On hold</option>
             <option value='5'>Cancelled</option>   
         </select>

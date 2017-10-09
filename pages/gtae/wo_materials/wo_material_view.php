@@ -53,6 +53,8 @@
                 $i=0;
                 $total_wo_sum=0;
                 $total_rem_sum=0;
+                $total_wo=0;
+                $total_rem=0;
                 foreach($result_basic as $row)
                 {
                     $i++;
@@ -62,10 +64,13 @@
                     $rem=$row['rem_qty'];
                     $arab=$row['arabi_qty'];
                     $koc=$row['koc_qty'];
-                    $total_wo=$sp*$arab;
-                    $total_wo_sum+=$total_wo;
-                    $total_rem=$sp*$rem;
-                    $total_rem_sum+=$total_rem;
+                    if($koc==0)
+                    {
+                        $total_wo=$sp*$arab;
+                        $total_wo_sum+=$total_wo;
+                        $total_rem=$sp*$rem;
+                        $total_rem_sum+=$total_rem;
+                    }
                     echo "<tr>";
                     echo "<td>$i</td>";
                     echo "<td>$s</td>";

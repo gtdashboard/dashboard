@@ -90,7 +90,7 @@
         if(!empty($result_basic))
         {
             echo json_encode($result_basic);
-            header("Location:wo_status.phpwo_no=$wo_no");
+            header("Location:wo_status.php?wo_no=$wo_no");
         }
     }
     

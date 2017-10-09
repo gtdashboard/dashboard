@@ -116,19 +116,19 @@
                         }
                         if($status==0)
                         {
-                            echo "<td>Issued</td>";
+                            echo "<td><span class='label label-primary'>Issued</span></td>";
                         }
                         else if($status==1)
                         {
-                            echo "<td>Commenced</td>";
+                            echo "<td><span class='label label-warning'>Commenced</span></td>";
                         }
                         else if($status==3)
                         {
-                            echo "<td>Invoiced</td>";
+                            echo "<td><span class='label label-success'>Invoiced</span></td>";
                         }
                         else if($status==2)
                         {
-                            echo "<td>Handed Over</td>";
+                            echo "<td><span class='label label-info'>Handed Over</span></td>";
                         }
                         else if($status==4)
                         {
@@ -136,7 +136,7 @@
                         }
                         else if($status==5)
                         {
-                            echo "<td>Cancelled</td>";
+                            echo "<td><span class='label label-danger'>Cancelled</span></td>";
                         }
                     }
 

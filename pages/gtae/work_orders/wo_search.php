@@ -14,46 +14,46 @@ function setDetails(id)
 }
 function handleData(data)
 {
-    console.log(data);
+    console.log("Main Data"+data);
     
     if(data.length>5)
     {
-        console.log(data.length);
+        //console.log(data.length);
         JSON.parse(data, (key, value) => {
         if(key=='work_order_no')
         {
-            console.log(value);
+            //console.log(value);
             document.getElementById("wo_num").textContent=value
         }
         if(key=='value')
         {
-            console.log(value);
+            //console.log(value);
             document.getElementById("wo_val").textContent="KD "+value
         }
         if(key=='description')
         {
-            console.log(value);
+            //console.log(value);
             document.getElementById("desc").textContent=value
         }
         if(key=='start')
         {
-            console.log(value);
+            //console.log(value);
             document.getElementById("st").textContent=value;
         }
         if(key=='end')
         {
-            console.log(value);
+            //console.log(value);
             document.getElementById("end").textContent=value;
             
         }
         if(key=='issue')
         {
-            console.log(value);
+            //console.log(value);
             document.getElementById("issue").textContent=value;
         }
         if(key=='pno')
         {
-            console.log(value);
+            //console.log(value);
             document.getElementById('pno').textContent="SP "+value;
         }
         if(key=='status')
@@ -61,7 +61,26 @@ function handleData(data)
             console.log(value);
             document.getElementById('status').textContent=value;
         }
-        
+        if(key=='commence_dt')
+        {
+            addStatus("Commenced",value)
+        }
+        if(key=='cancel_dt')
+        {
+            addStatus("Canceled",value)
+        }
+        if(key=='onhold_dt')
+        {
+            addStatus("Onhold",value)
+        }
+        if(key=='handover_dt')
+        {
+            addStatus("Handover",value)
+        }
+        if(key=='invoice_dt')
+        {
+            addStatus("Invoiced",value)
+        }
         });
     }
     else 
@@ -74,8 +93,22 @@ function handleData(data)
         document.getElementById("issue").textContent=''
         document.getElementById('status').textContent=''
         document.getElementById('pno').textContent=''
+        $( "#status_info" ).empty();
     }
-    console.log(data);
+    //console.log(data);
+}
+function addStatus(title,date)
+{
+    console.log("Title :"+title+" Date : " +date);
+    var str='<div class="form-group" id='+title+'><div class="row"><div class="col-xs-4"><label>'+title+'</label></div><div class="col-xs-8"><label>'+date+'</label></div></div></div>';
+    if ($('#status_info').find('#'+title).length) {
+    // found!
+    }
+    else
+    {
+        $( "#status_info" ).append(str);
+    }
+    
 }
 </script>
 <!DOCTYPE html>
@@ -204,6 +237,7 @@ function handleData(data)
                   </div>
                   </div>
                 </div>
+                <div id="status_info"></div>
                 </form>
               </div>
           </div>

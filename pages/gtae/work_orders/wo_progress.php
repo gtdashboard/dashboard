@@ -49,7 +49,7 @@ session_start();
         <label for="exampleInputPassword1">Choose Work Order Number</label>
         <select class="form-control" name="wo" id="wo">
         <?php
-        $basic="SELECT distinct(work_order_no) FROM wo_numbers WHERE pno=$p";
+        $basic="SELECT distinct(work_order_no) FROM wo_numbers WHERE pno=$p order by work_order_no desc";
         $result_basic=$db_handle->runQuery($basic);
         if(!empty($result_basic))
         {

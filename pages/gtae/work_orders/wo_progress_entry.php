@@ -46,7 +46,7 @@
         <label for="exampleInputPassword1">Choose Work Order Number</label>
         <select class="form-control" name="wo" id="wo">
         <?php
-        $basic="SELECT DISTINCT(wo_numbers.work_order_no) FROM `wo_progress`,wo_numbers WHERE wo_numbers.pno=$p and wo_numbers.id_wo=wo_progress.wo_id ";
+        $basic="SELECT DISTINCT(wo_numbers.work_order_no) FROM `wo_progress`,wo_numbers WHERE wo_numbers.pno=$p and wo_numbers.id_wo=wo_progress.wo_id order by work_order_no desc";
         $result_basic=$db_handle->runQuery($basic);
         if(!empty($result_basic))
         {

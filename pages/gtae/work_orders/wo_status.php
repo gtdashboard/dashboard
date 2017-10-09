@@ -54,7 +54,7 @@ session_start();
         <label for="exampleInputPassword1">Choose Work Order Number</label>
         <select class="form-control" name="wo" id="wo" selected='<?php echo $val;?>'>
         <?php
-        $basic="SELECT distinct(work_order_no) FROM wo_numbers WHERE pno=$p";
+        $basic="SELECT distinct(work_order_no) FROM wo_numbers WHERE pno=$p order by work_order_no desc";
         $result_basic=$db_handle->runQuery($basic);
         if(!empty($result_basic))
         {
@@ -78,12 +78,21 @@ session_start();
         <div class="form-group">
         <label for="exampleInputEmail1">Select Status</label>
         <select class="form-control" id="status" name="status">
-            <option value='0'>Issued</option>
-            <option value='1'>Commenced</option>
-            <option value='2'>Handed Over</option>
-            <option value='3'>Invoiced</option>
-            <option value='4'>On hold</option>
-            <option value='5'>Cancelled</option>   
+        <?php 
+            $status_query="select * from wo_status_code";
+            $result_status=$db_handle->runQuery($status_query);
+            if(!empty($result_status))
+            {
+                foreach($result_status as $row)
+                {
+                    $val=$row['status_no'];
+                    $status=$row['status'];
+                    echo "<option value='$val'>$status</option>";
+                }
+            }
+           
+            $dt=date('d.m.Y');
+        ?>
         </select>
         </div>
         <div class="form-group">
@@ -92,7 +101,7 @@ session_start();
             <div class="input-group-addon">
             <i class="fa fa-calendar"></i>
             </div>
-            <input type="text" class="form-control pull-right" id="datepicker" name="dt" autocomplete="off">
+            <input type="text" class="form-control pull-right" id="datepicker" name="dt" autocomplete="off" value="<?php echo $dt;?>">
             </div>
         </div>
         <div class="box-footer">

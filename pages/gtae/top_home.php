@@ -18,7 +18,7 @@
   <!-- Bootstrap 3.3.6 -->
   <link rel="stylesheet" href="../../bootstrap/css/bootstrap.min.css">
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <!-- Ionicons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
   <!-- Theme style -->
@@ -26,6 +26,35 @@
   <!-- AdminLTE Skins. Choose a skin from the css/skins
        folder instead of downloading all of them to reduce the load. -->
   <link rel="stylesheet" href="../../dist/css/skins/_all-skins.min.css">
+  
+  <style>
+/* Tooltip container */
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+}
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+ 
+    /* Position the tooltip text - see examples below! */
+    position: absolute;
+    z-index: 1;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+</style>
   
   <script type="text/javascript" src="../../fusion/js/fusioncharts.js"></script>
   <script type="text/javascript" src="../../fusion/js/themes/fusioncharts.theme.fint.js?cacheBust=56"></script>
@@ -48,16 +77,20 @@
             foreach ($result_basic as $row) 
             {
                $elapse= elapse($row['commence_date'], $row['finish_date']) ;
-               $query_consumed="SELECT SUM(value) FROM wo_numbers where pno=". $row['pno'];
+               $elapse_days= elapse_days($row['commence_date'], $row['finish_date']) ;
+               $pno=$row['pno'];
+               $query_consumed="select sum(value) as total_inv from wo_numbers,wo_status where pno='" . $row['pno'] . 
+               "' and wo_numbers.id_wo=wo_status.id_wo and status=3";
                $result_consumed=$db_handle->runQuery($query_consumed);
                foreach ($result_consumed as $row_consumed) 
                 {
-                   $consumed_percentage=$row_consumed['SUM(value)']/$row['contract_value']*100;
+                   $consumed_percentage=$row_consumed['total_inv']/$row['contract_value']*100;
+                   $consumed_amt = $row_consumed['total_inv'];
                 }
         ?>
-        
+        <a href="project_info.php?pno=<?php echo $pno;?>">
         <div class="col-md-3 col-sm-6 col-xs-12">
-            <div class="info-box bg-gray">
+            <div class="info-box bg-gray"  title="Work orders Invoiced: <?php echo number_format($consumed_amt);?>">
             <span class="info-box-icon"><i class="fa fa-usd"></i></span>
             <div class="info-box-content">
             <span class="info-box-text">Contract Value(SP <?php echo $row['pno'];?>)</span>
@@ -67,13 +100,13 @@
             <div class="progress-bar" style="width: <?php echo number_format($consumed_percentage);?>%"></div>
             </div>
             <span class="progress-description">
-            <?php echo number_format($consumed_percentage);?>% Value Consumed 
+	    <?php echo number_format($consumed_percentage);?>% Value Invoiced 
             </span>
             </div>
         </div>
         </div>
         <div class="col-md-3 col-sm-6 col-xs-12">
-            <div class="info-box bg-purple">
+            <div class="info-box bg-purple" title="Days Elapsed: <?php echo number_format($elapse_days);?>">
             <span class="info-box-icon"><i class="fa fa-calendar"></i></span>
             <div class="info-box-content">
             <span class="info-box-text">Project Duration(SP <?php echo $row['pno'];?>)</span>
@@ -88,6 +121,7 @@
             </div>
           </div>
         </div>
+        </a>
         <?php }?>
     </div>
     
@@ -274,6 +308,7 @@
             foreach ($result_amount as $row_amount)
             {
                 $total_am=$row_amount['total_am'];
+                $total_am = floor($total_am);
             }
         }
        
@@ -412,6 +447,74 @@
     <?php }?>
     </div>
     
+    <!-- ======================RESIDENCY,EQUIPMENT,GATEPASS EXPIRY WIDGET=============================== --> 
+    <div class="row">
+        <?php 
+            $basic="SELECT count(*) as res_no FROM `employee` where res_exp like '$y-$m-%' order by res_exp asc ";
+            $result_basic=$db_handle->runQuery($basic);
+            $res_no=0;
+            if(!empty($result_basic))
+            {
+                foreach ($result_basic as $row)
+                {
+                    $res_no=$row['res_no'];
+                }
+            }
+            $gate_no=0;
+            $basic="SELECT count(*) as gate_no FROM `employee` where gate_pass_exp like '$y-$m-%' order by gate_pass_exp asc";
+            $result_basic=$db_handle->runQuery($basic);
+            if(!empty($result_basic))
+            {
+                foreach ($result_basic as $row)
+                {
+                    $gate_no=$row['gate_no'];
+                }
+            }
+            $equip_no=0;
+            $basic="SELECT count(*) as equip_no FROM `EQUIPMENT` where gate_exp like '$y-$m-%' OR  dafter_exp like '$y-$m-%' or tpi_exp like '$y-$m-%'";
+            $result_basic=$db_handle->runQuery($basic);
+            if(!empty($result_basic))
+            {
+                foreach ($result_basic as $row)
+                {
+                    $equip_no=$row['equip_no'];
+                }
+            }
+        ?>
+        <a href="employee/emp_expiry.php">
+        <div class="col-md-4 col-sm-6 col-xs-12">
+          <div class="info-box">
+            <span class="info-box-icon bg-aqua"><i class="fa fa-id-card-o"></i></span>
+            <div class="info-box-content">
+              <span class="info-box-text">Residence Expiry</span>
+              <span class="info-box-number"><?php echo $res_no;?></span>
+            </div>
+          </div>
+        </div>
+        </a>
+        <a href="employee/emp_expiry.php">
+        <div class="col-md-4 col-sm-6 col-xs-12">
+          <div class="info-box">
+            <span class="info-box-icon bg-purple"><i class="fa fa-id-card-o"></i></span>
+            <div class="info-box-content">
+              <span class="info-box-text">Gate Pass Expiry</span>
+              <span class="info-box-number"><?php echo $gate_no;?></span>
+            </div>
+          </div>
+        </div>
+        </a>
+        <div class="col-md-4 col-sm-6 col-xs-12">
+          <div class="info-box">
+            <span class="info-box-icon bg-aqua"><i class="fa fa-car"></i></span>
+            <div class="info-box-content">
+              <span class="info-box-text">Vehicle Expiry</span>
+              <span class="info-box-number"><?php echo $equip_no;?></span>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    
     <!-- ======================THREE STATUS CHARTS FOR EQUIPMENT,MANPOWER AND WORK ORDER=============================== --> 
 
     <div class="row">
@@ -465,143 +568,11 @@
         </div>
     </div> 
     </div>
-    
-    <!-- ======================RESIDENCY,EQUIPMENT,GATEPASS EXPIRY TABLE=============================== --> 
-    <div class="row">
-    <div class="col-md-4">
-        <div class="box">
-        <div class="box-header">
-        <h3 class="box-title">Residence Expiry This Month</h3>
-        </div>
-        <div class="box-body table-responsive no-padding">
-        <table class="table table-hover">
-        <tr>
-            <th>Employee Name</th>
-            <th>Residence Expiry Date</th>
-            <th>Project</th>
-        </tr>
-        <?php 
-            $basic="SELECT * FROM `employee` where res_exp like '$y-$m-%' order by res_exp asc ";
-            $result_basic=$db_handle->runQuery($basic);
-            if(!empty($result_basic))
-            {
-                foreach ($result_basic as $row)
-                {
-                    echo "<tr>";
-                    //   echo "<td>".$row['emp_number']."</td>";
-                    echo "<td>".$row['emp_name']."</td>";
-                    //    echo "<td>".$row['designation']."</td>";
-                    $d=$row['res_exp'];
-                    $t= strtotime($d);
-                    $date=Date('d.m.Y',$t);
-                    echo "<td>".$date."</td>";
-                    echo "<td>".$row['pno']."</td>";
-                    echo "</tr>";
-                }
-            }
-        ?>
-        </table>
-        </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="box">
-        <div class="box-header">
-        <h3 class="box-title">Gatepass Expiry This Month</h3>
-        </div>
-        <div class="box-body table-responsive no-padding">
-        <table class="table table-hover">
-        <tr>
-            <th>Employee Name</th>
-            <th>Gate Pass Expiry Date</th>
-            <th>Project</th>
-        </tr>
-        <?php 
-            $basic="SELECT * FROM `employee` where gate_pass_exp like '$y-$m-%' order by gate_pass_exp asc";
-            $result_basic=$db_handle->runQuery($basic);
-            if(!empty($result_basic))
-            {
-                foreach ($result_basic as $row)
-                {
-                    echo "<tr>";
-                    // echo "<td>".$row['emp_number']."</td>";
-                    echo "<td>".$row['emp_name']."</td>";
-                    // echo "<td>".$row['designation']."</td>";
-                    $d=$row['gate_pass_exp'];
-                    $t= strtotime($d);
-                    $date=Date('d.m.Y',$t);
-                    echo "<td>".$date."</td>";
-                    echo "<td>".$row['pno']."</td>";
-                    echo "</tr>";
-                }
-            }
-        ?>
-        </table>
-        </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="box">
-        <div class="box-header">
-        <h3 class="box-title">Vehicle Expiry This Month</h3>
-        </div>
-        <div class="box-body table-responsive no-padding">
-        <table class="table table-hover">
-        <tr>
-            <th>Project</th>
-            <th>Vehicle</th>
-            <th>Plate No</th>
-            <th>Dafter Expiry</th>
-            <th>Gate Pass Expiry</th>
-            <th>TPI Expiry</th>
-        </tr>
-        <?php 
-            $basic="SELECT * FROM `EQUIPMENT` where gate_exp like '$y-$m-%' OR  dafter_exp like '$y-$m-%' or tpi_exp like '$y-$m-%'";
-            try
-            {
-                $result_basic=$db_handle->runQuery($basic);
-            }catch(Exception $e){}
-            if(!empty($result_basic))
-            {
-                foreach ($result_basic as $row)
-                {
-                    echo "<tr>";
-                    echo "<td>".$row['pno']."</td>";
-                    echo "<td>".$row['vehicle']."</td>";
-                    echo "<td>".$row['plate_no']."</td>";
-                    $d=$row['dafter_exp'];
-                    $t= strtotime($d);
-                    $date_daf=Date('d.m.Y',$t);
-                    echo "<td>".$date_daf."</td>";
-                    $d=$row['gate_exp'];
-                    $t= strtotime($d);
-                    $date_gate=Date('d.m.Y',$t);
-                    echo "<td>".$date_gate."</td>";
-                    $d=$row['tpi_exp'];
-                    $t= strtotime($d);
-                    $date_tpi=Date('d.m.Y',$t);
-                    echo "<td>".$date_tpi."</td>";
-                    echo "</tr>";
-                }
-            }
-            else {
-                    echo "<tr><td>";
-                    echo 'No Expiry this Month';
-                    echo "</td></tr>";
-            }
-        ?>
-        </table>
-        </div>
-        </div>
-    </div>
-    </div>
     </section>
         
     </div>
   </div>
 </div>
-<!-- ./wrapper -->
-
 <!-- jQuery 2.2.3 -->
 <script src="../../plugins/jQuery/jquery-2.2.3.min.js"></script>
 <!-- Bootstrap 3.3.6 -->

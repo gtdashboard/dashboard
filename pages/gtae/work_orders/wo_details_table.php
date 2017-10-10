@@ -15,8 +15,7 @@
 <?php $title="WO Details";?>
 <?php require '../head.php'?>
 <div class="wrapper">
-
-  <?php require '../header.php';?>
+<?php require '../header.php';?>
   <!-- Full Width Column -->
   <div class="content-wrapper">
   <div class="container">

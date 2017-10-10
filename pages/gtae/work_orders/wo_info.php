@@ -85,14 +85,14 @@
                         $response['status']= "Commenced";
                         $response['commence_dt']= $dt;
                     }
-                    else if($status==2)
+                    else if($status==3)
                     {
                         $dt= strtotime($dt);
                         $dt= date('d M Y', $dt);
                         $response['status']= "Invoiced";
                         $response['invoice_dt']= $dt;
                     }
-                    else if($status==3)
+                    else if($status==2)
                     {
                         $dt= strtotime($dt);
                         $dt= date('d M Y', $dt);
